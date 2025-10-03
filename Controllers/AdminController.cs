@@ -31,6 +31,11 @@ public class AdminController : Controller
         return View();
     }
 
+    public IActionResult Edit()
+    {
+        return View();
+    }
+
     public IActionResult NextTurn()
     {
         return View();
