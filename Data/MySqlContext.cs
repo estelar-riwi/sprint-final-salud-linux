@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using sprint_final_salud_linux.Models;
+
 namespace sprint_final_salud_linux.Data;
 
 public class MySqlContext : DbContext
@@ -7,4 +9,6 @@ public class MySqlContext : DbContext
         : base(options)
     {
     }
+    
+    public DbSet<User> Users { get; set; }
 }
