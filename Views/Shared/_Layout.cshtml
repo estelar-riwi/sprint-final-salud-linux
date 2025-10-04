@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/sprint_final_salud_linux.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    @RenderSection("Styles", required: false)
 </head>
 <body>
     <!-- Sidebar -->
@@ -30,11 +29,6 @@
                     <i class="fas fa-users-cog me-2"></i> Turnos
                 </a>
             </li>
-            <li class="nav-item">
-                <form asp-controller="Admin" asp-action="TurnView" method="post">
-                    <button type="submit" class="btn btn-success">Llamar siguiente</button>
-                </form>
-            </li>
         </ul>
     </nav>
 
@@ -54,7 +48,7 @@
                     <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">
                         <i class="fas fa-shield-alt me-1"></i> Privacidad
                     </a>
-                    <a asp-area="" asp-controller="Home" asp-action="Help" class="footer-link ms-3">
+                    <a href="#" class="footer-link ms-3">
                         <i class="fas fa-info-circle me-1"></i> Ayuda
                     </a>
                 </div>
