@@ -1,5 +1,7 @@
 using sprint_final_salud_linux.Data;
 using Microsoft.EntityFrameworkCore;
+using sprint_final_salud_linux.Signal;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,7 @@ builder.Services.AddDbContext<MySqlContext>(options =>
         new MySqlServerVersion(new Version(8, 0, 36)) // Usa la versión de tu MySQL
     )
 );
+builder.Services.AddSignalR();
 
 
 var app = builder.Build();
@@ -32,5 +35,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<SignalR>("/turnos");
 
 app.Run();

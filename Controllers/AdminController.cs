@@ -1,15 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using sprint_final_salud_linux.Data;
 using sprint_final_salud_linux.Models;
+using sprint_final_salud_linux.Signal;
 namespace sprint_final_salud_linux.Controllers;
 
 public class AdminController : Controller
 {
     private readonly MySqlContext _context;
+    private readonly IHubContext<SignalR> _hubContext;
     
-    public AdminController(MySqlContext context)
+    //temporal:
+    private static int turnoActual = 0;
+    
+    public AdminController(MySqlContext context, IHubContext<SignalR> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
     }
 
     public IActionResult Index()
@@ -101,10 +108,23 @@ public class AdminController : Controller
         return View(updateUser);
     }
 
-    public IActionResult NextTurn()
+    public IActionResult TurnView()
     {
         return View();
     }
+    
+    [HttpPost, ActionName("TurnView")]
+    public async Task<IActionResult> NextTurn()
+    {
+        turnoActual = (turnoActual % 100) + 1; 
+        int turnoSiguiente = (turnoActual % 100) + 1;
+        
+        await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turnoActual, turnoSiguiente);
+
+        TempData["message"] = $"Se llamó al turno {turnoActual}";
+        return RedirectToAction(nameof(Index));
+    }
+    
 
     public IActionResult ResetTurns()
     {
