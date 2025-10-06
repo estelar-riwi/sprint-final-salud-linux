@@ -112,6 +112,8 @@ public class AdminController : Controller
     {
         return View();
     }
+
+    
     
     [HttpPost, ActionName("TurnView")]
     public async Task<IActionResult> NextTurn()
@@ -123,6 +125,12 @@ public class AdminController : Controller
 
         TempData["message"] = $"Se llamó al turno {turnoActual}";
         return RedirectToAction(nameof(Index));
+    }
+    
+    public IActionResult CreateTurnView()
+    {
+        
+        return View();
     }
     
 
