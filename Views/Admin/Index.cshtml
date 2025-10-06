@@ -19,17 +19,17 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
-                        <tr>
-                            <th scope="col"><i class="fas fa-hashtag text-primary"></i> ID</th>
-                            <th scope="col"><i class="fas fa-user text-success"></i> Nombre</th>
-                            <th scope="col"><i class="fas fa-id-card text-info"></i> Identificación</th>
-                            <th scope="col"><i class="fas fa-phone text-warning"></i> Teléfono</th>
-                            <th scope="col" class="text-center"><i class="fas fa-cogs text-secondary"></i> Acciones</th>
-                        </tr>
+                    <tr>
+                        <th scope="col"><i class="fas fa-hashtag text-primary"></i> ID</th>
+                        <th scope="col"><i class="fas fa-user text-success"></i> Nombre</th>
+                        <th scope="col"><i class="fas fa-id-card text-info"></i> Identificación</th>
+                        <th scope="col"><i class="fas fa-phone text-warning"></i> Teléfono</th>
+                        <th scope="col" class="text-center"><i class="fas fa-cogs text-secondary"></i> Acciones</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var user in Model)
-                        {
+                    @foreach (var user in Model)
+                    {
                         <tr>
                             <td>@user.Id</td>
                             <td>@user.Name</td>
@@ -46,8 +46,8 @@
                                 </form>
                             </td>
                         </tr>
-                        }
-                        </tbody>
+                    }
+                    </tbody>
                 </table>
             </div>
         </div>
