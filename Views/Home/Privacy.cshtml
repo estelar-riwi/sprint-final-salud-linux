@@ -1,6 +1,75 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4 py-4">
+                    <h2 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i> Política de Privacidad
+                    </h2>
+                </div>
+                <div class="card-body p-5">
+                    <p class="text-muted mb-4 text-center">
+                        Última actualización: <strong>@DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy")</strong>
+                    </p>
+
+                    <h4 class="text-primary fw-bold mt-4">
+                        <i class="fas fa-user-lock me-2"></i> 1. Protección de Datos Personales
+                    </h4>
+                    <p class="text-secondary">
+                        En <strong>Riwi Salud</strong> valoramos su privacidad y nos comprometemos a proteger la información personal que usted nos proporciona. 
+                        Sus datos serán tratados conforme a las leyes de protección de datos vigentes, garantizando su seguridad y confidencialidad.
+                    </p>
+
+                    <h4 class="text-primary fw-bold mt-4">
+                        <i class="fas fa-database me-2"></i> 2. Información que Recopilamos
+                    </h4>
+                    <ul class="text-secondary ms-4">
+                        <li>Datos personales como nombre, identificación y teléfono.</li>
+                        <li>Imágenes capturadas durante el proceso de registro.</li>
+                        <li>Información de uso del sistema para mejorar la experiencia.</li>
+                    </ul>
+
+                    <h4 class="text-primary fw-bold mt-4">
+                        <i class="fas fa-handshake me-2"></i> 3. Uso de la Información
+                    </h4>
+                    <p class="text-secondary">
+                        La información recolectada se utiliza exclusivamente para:
+                    </p>
+                    <ul class="text-secondary ms-4">
+                        <li>Gestionar afiliaciones y servicios médicos.</li>
+                        <li>Generar y validar carnets de identificación.</li>
+                        <li>Garantizar la trazabilidad y seguridad de la información.</li>
+                    </ul>
+
+                    <h4 class="text-primary fw-bold mt-4">
+                        <i class="fas fa-share-alt me-2"></i> 4. Divulgación de Datos
+                    </h4>
+                    <p class="text-secondary">
+                        Sus datos personales no serán compartidos con terceros, excepto en casos donde exista una obligación legal 
+                        o sea necesario para la prestación del servicio autorizado por usted.
+                    </p>
+
+                    <h4 class="text-primary fw-bold mt-4">
+                        <i class="fas fa-user-shield me-2"></i> 5. Derechos del Usuario
+                    </h4>
+                    <p class="text-secondary">
+                        Usted tiene derecho a acceder, rectificar, cancelar o solicitar la eliminación de sus datos personales en cualquier momento. 
+                        Para ejercer estos derechos, puede comunicarse con nosotros a través de:
+                    </p>
+                    <p class="fw-semibold text-dark">
+                        📧 <a href="mailto:soporte@riwisalud.com" class="text-decoration-none text-primary">soporte@riwisalud.com</a>
+                    </p>
+
+                    <div class="text-center mt-5">
+                        <i class="fas fa-heart text-danger fs-4"></i>
+                        <p class="text-muted mt-2 mb-0">Gracias por confiar en nosotros 💙</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

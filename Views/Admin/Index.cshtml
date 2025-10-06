@@ -21,6 +21,7 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col"><i class="fas fa-hashtag text-primary"></i> ID</th>
+                            <th scope="col"><i class="fas fa-image text-secondary"></i> Foto</th>
                             <th scope="col"><i class="fas fa-user text-success"></i> Nombre</th>
                             <th scope="col"><i class="fas fa-id-card text-info"></i> Identificación</th>
                             <th scope="col"><i class="fas fa-phone text-warning"></i> Teléfono</th>
@@ -28,28 +29,63 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var user in Model)
+                        @if (!Model.Any())
                         {
-                        <tr>
-                            <td>@user.Id</td>
-                            <td>@user.Name</td>
-                            <td>@user.Identification</td>
-                            <td>@user.Phone</td>
-                            <td class="text-center">
-                                <a class="btn btn-sm btn-outline-primary me-1" title="Editar" asp-action="Edit" asp-route-id="@user.Id" asp-controller="Admin">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form asp-action="Delete" asp-route-id="@user.Id" asp-controller="Admin" class="d-inline delete-form">
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar" >
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">
+                                    <i class="fas fa-info-circle"></i> No hay afiliados registrados
+                                </td>
+                            </tr>
                         }
-                        </tbody>
+                        else
+                        {
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Picture))
+                                        {
+                                            <img src="@user.Picture" alt="Foto de @user.Name"
+                                                 class="rounded-circle zoomable-photo"
+                                                 style="width:40px; height:40px; object-fit:cover; cursor:pointer;"
+                                                 data-bs-toggle="modal" data-bs-target="#photoModal"
+                                                 data-photo="@user.Picture" data-name="@user.Name" />
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-user-circle fa-2x text-secondary"></i>
+                                        }
+                                    </td>
+                                    <td>@user.Name</td>
+                                    <td>@user.Identification</td>
+                                    <td>@user.Phone</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-outline-primary me-1" title="Editar" asp-action="Edit" asp-route-id="@user.Id" asp-controller="Admin">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@user.Id" asp-controller="Admin" class="d-inline delete-form">
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🖼️ Modal de imagen ampliada -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 shadow-none text-center">
+            <img id="modalImage" src="" class="img-fluid rounded-4 shadow-lg" alt="Foto ampliada">
+            <p class="mt-2 text-white fw-semibold" id="modalName"></p>
         </div>
     </div>
 </div>
@@ -57,20 +93,34 @@
 @section Scripts {
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        // ✅ SweetAlerts de mensajes
         @if (TempData["message"] != null)
         {
             <text>
-        Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: '@Html.Raw(TempData["message"])',
-            timer: 2000,
-            showConfirmButton: false
-        });
-        </text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: '@Html.Raw(TempData["message"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            </text>
         }
 
-        // Confirmación de eliminación
+        @if (TempData["error"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@Html.Raw(TempData["error"])',
+                confirmButtonText: 'Aceptar'
+            });
+            </text>
+        }
+
+        // ❌ Confirmación al eliminar
         document.querySelectorAll('.delete-form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -91,6 +141,18 @@
                 });
             });
         });
+
+        // 🖼️ Ampliar imagen al hacer clic
+        const photoModal = document.getElementById('photoModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalName = document.getElementById('modalName');
+
+        document.querySelectorAll('.zoomable-photo').forEach(img => {
+            img.addEventListener('click', () => {
+                modalImage.src = img.dataset.photo;
+                modalName.textContent = img.dataset.name;
+            });
+        });
     });
-</script>
+    </script>
 }
