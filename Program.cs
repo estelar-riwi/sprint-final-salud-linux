@@ -1,5 +1,8 @@
 using sprint_final_salud_linux.Data;
 using Microsoft.EntityFrameworkCore;
+using sprint_final_salud_linux.Services;
+using sprint_final_salud_linux.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +14,8 @@ builder.Services.AddDbContext<MySqlContext>(options =>
     )
 );
 
+builder.Services.AddSingleton<sprint_final_salud_linux.Services.CloudinaryService>();
+builder.Services.AddScoped<CloudinaryService>();
 
 var app = builder.Build();
 

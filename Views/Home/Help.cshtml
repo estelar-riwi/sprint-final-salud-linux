@@ -1,0 +1,116 @@
+@{
+    ViewData["Title"] = "Centro de Ayuda";
+}
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-life-ring me-2"></i> Centro de Ayuda
+        </h2>
+        <p class="text-muted">Encuentra respuestas rápidas, guías y soporte para tu cuenta de afiliado.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sección 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">
+                        <i class="fas fa-user-edit me-2"></i> Gestión de Perfil
+                    </h5>
+                    <p class="card-text text-muted">
+                        Aprende a editar tu información personal, cambiar tu foto y actualizar tus datos de contacto.
+                    </p>
+                    <a asp-action="Edit" asp-controller="Admin" class="btn btn-outline-primary btn-sm">
+                        Ir a mi perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fas fa-qrcode me-2"></i> Escaneo de Código QR
+                    </h5>
+                    <p class="card-text text-muted">
+                        Cada afiliado tiene un código QR único. Al escanearlo podrás acceder directamente a su ficha.
+                    </p>
+                    <a href="#" class="btn btn-outline-success btn-sm">
+                        Ver más información
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-info">
+                        <i class="fas fa-receipt me-2"></i> Comprobantes y Recibos
+                    </h5>
+                    <p class="card-text text-muted">
+                        Aprende cómo generar y descargar los recibos de registro o actualización de afiliados.
+                    </p>
+                    <a href="#" class="btn btn-outline-info btn-sm">
+                        Ver guía
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 4 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">
+                        <i class="fas fa-lock me-2"></i> Seguridad y Privacidad
+                    </h5>
+                    <p class="card-text text-muted">
+                        Mantén segura tu cuenta y conoce nuestras políticas de protección de datos.
+                    </p>
+                    <a asp-action="Privacy" asp-controller="Home" class="btn btn-outline-warning btn-sm">
+                        Leer política
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">
+                        <i class="fas fa-headset me-2"></i> Soporte Técnico
+                    </h5>
+                    <p class="card-text text-muted">
+                        ¿Tienes algún problema o error en el sistema? Contáctanos y te ayudaremos a resolverlo.
+                    </p>
+                    <a href="mailto:soporte@tuapp.com" class="btn btn-outline-danger btn-sm">
+                        Contactar soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 6 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">
+                        <i class="fas fa-book me-2"></i> Manual de Usuario
+                    </h5>
+                    <p class="card-text text-muted">
+                        Descarga la guía completa del sistema en formato PDF para conocer todas sus funciones.
+                    </p>
+                    <a href="/docs/manual_afiliados.pdf" target="_blank" class="btn btn-outline-secondary btn-sm">
+                        Descargar manual
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
