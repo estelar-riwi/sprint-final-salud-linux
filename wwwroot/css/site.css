@@ -146,3 +146,56 @@ html, body {
     color: #ffc107; /* amarillo salud */
 }
 
+body {
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+}
+.card {
+    background-color: #fff;
+}
+h4 {
+    border-left: 4px solid #0d6efd;
+    padding-left: 10px;
+}
+ul li {
+    margin-bottom: 6px;
+}
+
+/* 🔍 Efecto visual al pasar sobre la miniatura */
+.zoomable-photo {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+.zoomable-photo:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Fondo del modal ligeramente oscuro */
+.modal-content {
+    background: rgba(0,0,0,0.8);
+}
+
+body {
+    background: #f8f9fa;
+}
+
+.hover-card {
+    transition: all 0.3s ease-in-out;
+    border-radius: 12px;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.card-title i {
+    font-size: 1.2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.btn {
+    border-radius: 50px;
+}
