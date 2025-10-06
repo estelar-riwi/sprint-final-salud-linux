@@ -1,18 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using sprint_final_salud_linux.Data;
 using sprint_final_salud_linux.Models;
 using sprint_final_salud_linux.Services;
-
+using sprint_final_salud_linux.Signal;
 namespace sprint_final_salud_linux.Controllers;
 
 public class AdminController : Controller
 {
-     private readonly MySqlContext _context;
+    private readonly MySqlContext _context;
+    private readonly IHubContext<SignalR> _hubContext;
     private readonly CloudinaryService _cloudinary;
-
-    public AdminController(MySqlContext context, CloudinaryService cloudinary)
+    //temporal:
+    private static int turnoActual = 0;
+    
+    public AdminController(MySqlContext context, CloudinaryService cloudinary, IHubContext<SignalR> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
         _cloudinary = cloudinary;
     }
 
@@ -80,7 +85,7 @@ public class AdminController : Controller
         _context.Users.Remove(user);
         _context.SaveChanges();
         TempData["message"] = "Cliente eliminado";
-        return RedirectToAction(nameof(Index));
+        return Ok();
     }
 
     public IActionResult Edit(int Id)
@@ -121,10 +126,23 @@ public class AdminController : Controller
         return View(updateUser);
     }
 
-    public IActionResult NextTurn()
+    public IActionResult TurnView()
     {
         return View();
     }
+    
+    [HttpPost, ActionName("TurnView")]
+    public async Task<IActionResult> NextTurn()
+    {
+        turnoActual = (turnoActual % 100) + 1; 
+        int turnoSiguiente = (turnoActual % 100) + 1;
+        
+        await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turnoActual, turnoSiguiente);
+
+        TempData["message"] = $"Se llamó al turno {turnoActual}";
+        return RedirectToAction(nameof(Index));
+    }
+    
 
     public IActionResult ResetTurns()
     {
