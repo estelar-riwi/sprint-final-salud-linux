@@ -74,7 +74,7 @@ public class AdminController : Controller
         _context.Users.Remove(user);
         _context.SaveChanges();
         TempData["message"] = "Cliente eliminado";
-        return RedirectToAction(nameof(Index));
+        return Ok();
     }
 
     public IActionResult Edit(int Id)
