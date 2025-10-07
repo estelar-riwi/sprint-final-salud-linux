@@ -1,0 +1,18 @@
+@model User;
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card text-center shadow-lg border-0" style="width: 22rem;">
+        <div class="card-body">
+            <img src="@Model.Picture" 
+                 alt="Foto de usuario" 
+                 class="rounded-circle mb-3" 
+                 style="width: 120px; height: 120px; object-fit: cover;">
+            <h5 class="card-title fw-bold mb-2">@Model.Name</h5>
+            <p class="card-text mb-1"><strong>Identificación:</strong> @Model.Identification</p>
+            <p class="card-text mb-3"><strong>Teléfono:</strong> @Model.Phone</p>
+            <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-danger">
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
