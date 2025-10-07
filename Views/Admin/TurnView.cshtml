@@ -1,24 +1,189 @@
 @model sprint_final_salud_linux.Models.Turn
 @{
     ViewData["Title"] = "Pantalla de Turnos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Pantalla de Turnos</h2>
-<div>
-    <h3>Turno actual: <span id="actual">@Model.CurrentTurn</span></h3>
-    <h4>Siguiente: <span id="siguiente">@Model.NextTurn</span></h4>
+<div class="container my-5 d-flex justify-content-center align-items-center text-center">
+    <div id="turnPanel" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+        <div class="card-header bg-primary text-white text-center fw-bold position-relative">
+            <span class="header-title">
+                <i class="fas fa-bell me-2"></i> Panel de Turnos - Sala de Espera
+            </span>
+            <button id="fullscreenBtn" class="btn btn-light btn-sm fw-bold position-absolute end-0 me-3">
+                <i class="fas fa-expand"></i> Pantalla completa
+            </button>
+        </div>
+
+        <div class="card-body text-center py-5">
+            <h4 class="text-secondary fw-semibold mb-3">Turno actual:</h4>
+            <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">@Model.CurrentTurn</h1>
+
+            <h5 id="ventanilla" class="text-info fw-bold fs-3 mt-2">Ventanilla: -</h5>
+
+            <hr class="my-4" />
+
+            <h5 class="text-muted fw-semibold mb-3">Siguiente:</h5>
+            <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">@Model.NextTurn</h2>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/turnos")
-        .build();
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/turnos")
+            .build();
 
-    connection.on("ActualizarTurnos", (CurrentTurn, NextTurn) => {
-        document.getElementById("actual").innerText = CurrentTurn;
-        document.getElementById("siguiente").innerText = NextTurn;
-    });
+        const actual = document.getElementById("actual");
+        const siguiente = document.getElementById("siguiente");
+        const ventanilla = document.getElementById("ventanilla");
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const panel = document.getElementById("turnPanel");
+        
+        const sonidos = {
+            1: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5115e3b7ef.mp3?filename=notification-3-20573.mp3"),
+            2: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_64b7b8d8cb.mp3?filename=ping-82822.mp3"),
+            3: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_4297b7cd69.mp3?filename=bell-125970.mp3"),
+            default: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5dfd26e2f1.mp3?filename=pop-94319.mp3")
+        };
 
-    connection.start().catch(err => console.error(err.toString()));
-</script>
+        connection.on("ActualizarTurnos", (CurrentTurn, NextTurn, Ventanilla) => {
+            if (actual.innerText !== CurrentTurn.toString()) {
+                actual.innerText = CurrentTurn;
+                siguiente.innerText = NextTurn;
+                
+                ventanilla.innerText = "Ventanilla: " + 
+                    (Ventanilla !== null && Ventanilla !== undefined && Ventanilla !== "" ? Ventanilla : "-");
+                
+                actual.classList.add("neon-anim", "fade-anim");
+                ventanilla.classList.add("glow-vent");
+
+                const sonido = sonidos[Ventanilla] || sonidos.default;
+                sonido.play();
+
+                setTimeout(() => {
+                    actual.classList.remove("neon-anim", "fade-anim");
+                    ventanilla.classList.remove("glow-vent");
+                }, 3000);
+            }
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+        
+        fullscreenBtn.addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                panel.requestFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Salir';
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Pantalla completa';
+                });
+            }
+        });
+    </script>
+
+    <style>
+        #actual, #siguiente, #ventanilla {
+            text-decoration: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+        }
+        
+        .header-title {
+            display: block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .neon-anim {
+            color: #007bff !important;
+            text-shadow:
+                0 0 10px #007bff,
+                0 0 20px #007bff,
+                0 0 40px #007bff,
+                0 0 80px #007bff;
+            animation: glow 1.2s ease-in-out infinite alternate;
+        }
+
+        @@keyframes glow {
+            from {
+                text-shadow: 0 0 5px #007bff, 0 0 15px #007bff;
+            }
+            to {
+                text-shadow: 0 0 25px #00bfff, 0 0 60px #00bfff;
+            }
+        }
+        
+        .fade-anim {
+            animation: fadeInOut 1.5s ease-in-out infinite alternate;
+        }
+
+        @@keyframes fadeInOut {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .glow-vent {
+            color: #00bfff !important;
+            text-shadow:
+                0 0 5px #00bfff,
+                0 0 15px #00bfff,
+                0 0 30px #00bfff;
+            transition: all 0.5s ease;
+        }
+        
+        #fullscreenBtn {
+            border: none;
+            color: #007bff;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        #fullscreenBtn:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        
+        .card {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        h1.turno-actual {
+            font-size: 6rem;
+        }
+
+        h2.turno-siguiente {
+            font-size: 3rem;
+        }
+
+        @@media (max-width: 768px) {
+            h1.turno-actual { font-size: 4rem; }
+            h2.turno-siguiente { font-size: 2rem; }
+            #ventanilla { font-size: 1.5rem; }
+        }
+
+        body:fullscreen .container {
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body:fullscreen .card {
+            width: 95vw;
+            height: 95vh;
+        }
+    </style>
+}
