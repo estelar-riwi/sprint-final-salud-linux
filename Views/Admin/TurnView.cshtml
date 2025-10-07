@@ -1,14 +1,14 @@
+@model sprint_final_salud_linux.Models.Turn
 @{
     ViewData["Title"] = "Pantalla de Turnos";
 }
 
 <h2>Pantalla de Turnos</h2>
 <div>
-    <h3>Turno actual: <span id="actual">-</span></h3>
-    <h4>Siguiente: <span id="siguiente">-</span></h4>
+    <h3>Turno actual: <span id="actual">@Model.CurrentTurn</span></h3>
+    <h4>Siguiente: <span id="siguiente">@Model.NextTurn</span></h4>
 </div>
 
-@*<script src="~/lib/signalr/signalr.js"></script>*@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
     const connection = new signalR.HubConnectionBuilder()

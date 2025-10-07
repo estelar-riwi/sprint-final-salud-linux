@@ -11,4 +11,8 @@ public class MySqlContext : DbContext
     }
     
     public DbSet<User> Users { get; set; }
+    
+    public DbSet<Turn> Turns { get; set; }
+    
+    public DbSet<TurnRequest> TurnRequests { get; set; }
 }
