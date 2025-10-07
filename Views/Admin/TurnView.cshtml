@@ -17,14 +17,14 @@
 
         <div class="card-body text-center py-5">
             <h4 class="text-secondary fw-semibold mb-3">Turno actual:</h4>
-            <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">-</h1>
+            <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">@Model.CurrentTurn</h1>
 
             <h5 id="ventanilla" class="text-info fw-bold fs-3 mt-2">Ventanilla: -</h5>
 
             <hr class="my-4" />
 
             <h5 class="text-muted fw-semibold mb-3">Siguiente:</h5>
-            <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">-</h2>
+            <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">@Model.NextTurn</h2>
         </div>
     </div>
 </div>
