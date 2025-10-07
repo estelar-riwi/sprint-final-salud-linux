@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <form asp-action="Update" asp-route-Id="@Model.Id" method="post">
+                    <form asp-action="Update" asp-route-Id="@Model.Id" method="post" enctype="multipart/form-data">
                         <!-- FOTO ACTUAL -->
                         <div class="text-center mb-3">
                             <img id="currentPhoto" 
@@ -81,59 +81,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-<script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const photoBase64 = document.getElementById('photoBase64');
-    const startCamera = document.getElementById('startCamera');
-    const takePhoto = document.getElementById('takePhoto');
-    const cancelPhoto = document.getElementById('cancelPhoto');
-    const currentPhoto = document.getElementById('currentPhoto');
-
-    let stream = null;
-
-    startCamera.addEventListener('click', async () => {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        video.style.display = 'block';
-        startCamera.style.display = 'none';
-        takePhoto.style.display = 'inline-block';
-        cancelPhoto.style.display = 'inline-block';
-        currentPhoto.style.display = 'none';
-    });
-
-    takePhoto.addEventListener('click', () => {
-        const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
-        photoBase64.value = dataURL;
-
-        currentPhoto.src = dataURL;
-        currentPhoto.style.display = 'block';
-        video.style.display = 'none';
-
-        takePhoto.style.display = 'none';
-        cancelPhoto.style.display = 'none';
-        startCamera.style.display = 'inline-block';
-
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-    });
-
-    cancelPhoto.addEventListener('click', () => {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-        video.style.display = 'none';
-        startCamera.style.display = 'inline-block';
-        takePhoto.style.display = 'none';
-        cancelPhoto.style.display = 'none';
-        currentPhoto.style.display = 'block';
-    });
-</script>
-}

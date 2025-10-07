@@ -18,8 +18,17 @@ public class AdminController : Controller
 
     public IActionResult Index()
     {
-        var users = _context.Users;
-        return View(users);
+        var users = _context.Users.Where(u => u.IsActive).ToList();
+        ViewBag.Showing = "Activos";
+        return View("Index", users);
+    }
+
+    // ✅ Mostrar usuarios inactivos
+    public IActionResult InactiveList()
+    {
+        var users = _context.Users.Where(u => !u.IsActive).ToList();
+        ViewBag.Showing = "Inactivos";
+        return View("Index", users);
     }
 
     public IActionResult Create()
@@ -54,6 +63,7 @@ public class AdminController : Controller
                 user.Picture = await _cloudinary.UploadImageAsync(bytes, $"foto_{DateTime.Now.Ticks}.png");
             }
 
+            user.IsActive = true;
             _context.Add(user);
             await _context.SaveChangesAsync();
 
@@ -69,18 +79,19 @@ public class AdminController : Controller
         return View();
     }
 
-    public IActionResult Delete(int Id)
+    public IActionResult ToggleStatus(int id)
     {
-        var user = _context.Users.Find(Id);
+        var user = _context.Users.Find(id);
         if (user == null)
-        {
             return NotFound();
-        }
 
-        _context.Users.Remove(user);
+        user.IsActive = !user.IsActive;
         _context.SaveChanges();
-        TempData["message"] = "Cliente eliminado";
-        return RedirectToAction(nameof(Index));
+
+        string estado = user.IsActive ? "activado" : "desactivado";
+        TempData["message"] = $"Usuario {estado} correctamente";
+
+        return RedirectToAction(user.IsActive ? nameof(Index) : nameof(InactiveList));
     }
 
     public IActionResult Edit(int Id)
@@ -94,32 +105,44 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Update(int Id, User updateUser, string photoBase64)
+    public async Task<IActionResult> Update(int Id, User updateUser, string? photoBase64)
     {
         var user = _context.Users.Find(Id);
         if (user == null)
             return NotFound();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return View("Edit", updateUser);
+
+        // 🔹 Actualizar siempre los datos principales
+        user.Name = updateUser.Name;
+        user.Identification = updateUser.Identification;
+        user.Phone = updateUser.Phone;
+
+        // 🔹 Solo si hay una nueva foto
+        if (!string.IsNullOrEmpty(photoBase64))
         {
-            user.Name = updateUser.Name;
-            user.Identification = updateUser.Identification;
-            user.Phone = updateUser.Phone;
-            
-            if (!string.IsNullOrEmpty(photoBase64))
+            try
             {
                 var base64Data = photoBase64.Split(',')[1];
                 var bytes = Convert.FromBase64String(base64Data);
                 user.Picture = await _cloudinary.UploadImageAsync(bytes, $"foto_{DateTime.Now.Ticks}.png");
             }
-
-            await _context.SaveChangesAsync();
-            TempData["message"] = "Usuario actualizado correctamente";
-            return RedirectToAction(nameof(Index));
+            catch
+            {
+                TempData["error"] = "❌ Error al procesar la foto. Intenta nuevamente.";
+                return View("Edit", updateUser);
+            }
         }
 
-        return View(updateUser);
+        // 🔹 Guardar cambios siempre
+        _context.Update(user);
+        await _context.SaveChangesAsync();
+
+        TempData["message"] = "✅ Usuario actualizado correctamente";
+        return RedirectToAction(nameof(Index));
     }
+
 
     public IActionResult NextTurn()
     {
