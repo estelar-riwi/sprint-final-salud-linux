@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using sprint_final_salud_linux.Data;
 using sprint_final_salud_linux.Models;
-using sprint_final_salud_linux.Services;
 using sprint_final_salud_linux.Signal;
 namespace sprint_final_salud_linux.Controllers;
 
@@ -10,15 +9,14 @@ public class AdminController : Controller
 {
     private readonly MySqlContext _context;
     private readonly IHubContext<SignalR> _hubContext;
-    private readonly CloudinaryService _cloudinary;
+    
     //temporal:
     private static int turnoActual = 0;
     
-    public AdminController(MySqlContext context, CloudinaryService cloudinary, IHubContext<SignalR> hubContext)
+    public AdminController(MySqlContext context, IHubContext<SignalR> hubContext)
     {
         _context = context;
         _hubContext = hubContext;
-        _cloudinary = cloudinary;
     }
 
     public IActionResult Index()
@@ -33,42 +31,33 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Store([Bind("Name,Identification,Phone")] User user, string photoBase64)
+    public IActionResult Store([Bind("Name,Identification,Phone")] User user)
     {
         if (ModelState.IsValid)
         {
-            // Validaciones
-            if (_context.Users.Any(u => u.Identification == user.Identification))
+            var existsIdentification = _context.Users.Any(u => u.Identification == user.Identification);
+            if (existsIdentification)
             {
                 ModelState.AddModelError("Identification", "Esta identificación ya está registrada.");
                 return View("Create", user);
             }
-
-            if (_context.Users.Any(u => u.Phone == user.Phone))
+            
+            var existisPhone = _context.Users.Any(u => u.Phone == user.Phone);
+            if (existisPhone)
             {
-                ModelState.AddModelError("Phone", "Este teléfono ya está registrado.");
-                return View("Create", user);
+                ModelState.AddModelError("phone", "Este telefono ya está registrado.");
+                return View("Create", user);           
             }
-
-            // 📷 Si llegó la foto en base64, subir a Cloudinary
-            if (!string.IsNullOrEmpty(photoBase64))
-            {
-                var base64Data = photoBase64.Split(',')[1]; // quitar "data:image/png;base64,"
-                var bytes = Convert.FromBase64String(base64Data);
-
-                user.Picture = await _cloudinary.UploadImageAsync(bytes, $"foto_{DateTime.Now.Ticks}.png");
-            }
-
+            
             _context.Add(user);
-            await _context.SaveChangesAsync();
-
-            TempData["message"] = "Usuario registrado correctamente";
+            _context.SaveChanges();
+            TempData["message"] = "Usuario creado";
             return RedirectToAction(nameof(Index));
         }
 
         return View("Create", user);
     }
-
+    
     public IActionResult Carnet()
     {
         return View();
@@ -81,7 +70,7 @@ public class AdminController : Controller
         {
             return NotFound();
         }
-
+        
         _context.Users.Remove(user);
         _context.SaveChanges();
         TempData["message"] = "Cliente eliminado";
@@ -98,28 +87,21 @@ public class AdminController : Controller
         return View(user);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Update(int Id, User updateUser, string photoBase64)
+    public IActionResult Update(int Id, User updateUser)
     {
         var user = _context.Users.Find(Id);
         if (user == null)
+        {
             return NotFound();
+        }
 
         if (ModelState.IsValid)
         {
             user.Name = updateUser.Name;
             user.Identification = updateUser.Identification;
             user.Phone = updateUser.Phone;
-            
-            if (!string.IsNullOrEmpty(photoBase64))
-            {
-                var base64Data = photoBase64.Split(',')[1];
-                var bytes = Convert.FromBase64String(base64Data);
-                user.Picture = await _cloudinary.UploadImageAsync(bytes, $"foto_{DateTime.Now.Ticks}.png");
-            }
-
-            await _context.SaveChangesAsync();
-            TempData["message"] = "Usuario actualizado correctamente";
+            _context.SaveChanges();
+            TempData["message"] = "Usuario actualizado";
             return RedirectToAction(nameof(Index));
         }
 
@@ -139,6 +121,8 @@ public class AdminController : Controller
 
         return View(turn);
     }
+
+    
     
     [HttpPost, ActionName("TurnView")]
     public async Task<IActionResult> NextTurn()
@@ -165,6 +149,13 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    public IActionResult CreateTurnView()
+    {
+        
+        return View();
+    }
+    
+
     public IActionResult ResetTurns()
     {
         return View();
