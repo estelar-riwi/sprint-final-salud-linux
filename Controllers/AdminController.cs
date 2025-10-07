@@ -110,7 +110,16 @@ public class AdminController : Controller
 
     public IActionResult TurnView()
     {
-        return View();
+        var turn = _context.Turns.FirstOrDefault(t => t.Id == 1);
+
+        if (turn == null)
+        {
+            turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+            _context.Turns.Add(turn);
+            _context.SaveChanges();
+        }
+
+        return View(turn);
     }
 
     
@@ -118,12 +127,25 @@ public class AdminController : Controller
     [HttpPost, ActionName("TurnView")]
     public async Task<IActionResult> NextTurn()
     {
-        turnoActual = (turnoActual % 100) + 1; 
-        int turnoSiguiente = (turnoActual % 100) + 1;
-        
-        await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turnoActual, turnoSiguiente);
+        // Obtener el único registro de turnos
+        var turn = await _context.Turns.FindAsync(1);
 
-        TempData["message"] = $"Se llamó al turno {turnoActual}";
+        if (turn == null)
+        {
+            turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+            _context.Turns.Add(turn);
+        }
+
+        // Actualizar turno actual y siguiente
+        turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
+        turn.NextTurn = (turn.CurrentTurn % 100) + 1;
+
+        await _context.SaveChangesAsync();
+
+        // Notificar a todas las pantallas conectadas
+        await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turn.CurrentTurn, turn.NextTurn);
+
+        TempData["message"] = $"Se llamó al turno {turn.CurrentTurn}";
         return RedirectToAction(nameof(Index));
     }
     
@@ -137,6 +159,29 @@ public class AdminController : Controller
     public IActionResult ResetTurns()
     {
         return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> ResetTurnsConfirmed()
+    {
+        var turn = await _context.Turns.FindAsync(1);
+
+        if (turn == null)
+        {
+            turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+            _context.Turns.Add(turn);
+        }
+        else
+        {
+            turn.CurrentTurn = 0;
+            turn.NextTurn = 1;
+        }
+
+        await _context.SaveChangesAsync();
+        
+        await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turn.CurrentTurn, turn.NextTurn);
+
+        TempData["message"] = "Los turnos fueron reiniciados correctamente.";
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult History()
