@@ -2,38 +2,56 @@
 
 <div class="container my-5">
     <div class="text-center mb-4">
-        <h2 class="text-primary fw-bold">
-            <i class="fas fa-hospital-user me-2"></i> 
-            Gestión de Afiliados
+        <h2 class="fw-bold" style="color: #007bff;">
+            <i class="fas fa-hospital-user me-2"></i> Gestión de Afiliados
         </h2>
-        <p class="text-muted">Listado de afiliados registrados en el sistema</p>
+        <p class="text-muted">Administra los afiliados activos e inactivos del sistema</p>
     </div>
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span><i class="fas fa-users me-2"></i> Lista de Afiliados</span>
-            <a class="btn btn-light btn-sm" asp-action="Create" asp-controller="Admin">
-                <i class="fas fa-user-plus text-primary"></i> Nuevo Afiliado
-            </a>
+
+    <!-- 🔹 Botones de filtro -->
+    <div class="text-center mb-4">
+        <a asp-action="Index" asp-controller="Admin"
+           class="btn @(ViewBag.Showing == "Activos" ? "btn-primary text-white" : "btn-outline-primary") rounded-pill px-4 mx-2">
+            <i class="fas fa-user-check me-1"></i> Activos
+        </a>
+        <a asp-action="InactiveList" asp-controller="Admin"
+           class="btn @(ViewBag.Showing == "Inactivos" ? "btn-secondary text-white" : "btn-outline-secondary") rounded-pill px-4 mx-2">
+            <i class="fas fa-user-slash me-1"></i> Inactivos
+        </a>
+        <a asp-action="Create" asp-controller="Admin"
+           class="btn btn-success rounded-pill px-4 mx-2">
+            <i class="fas fa-user-plus me-1"></i> Nuevo Afiliado
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-white border-0 text-center py-3">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="fas fa-users me-2"></i> Lista de Afiliados — 
+                <span class="text-dark">@ViewBag.Showing</span>
+            </h5>
         </div>
+
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                    <tr>
-                        <th scope="col"><i class="fas fa-hashtag text-primary"></i> ID</th>
-                        <th scope="col"><i class="fas fa-image text-secondary"></i> Foto</th>
-                        <th scope="col"><i class="fas fa-user text-success"></i> Nombre</th>
-                        <th scope="col"><i class="fas fa-id-card text-info"></i> Identificación</th>
-                        <th scope="col"><i class="fas fa-phone text-warning"></i> Teléfono</th>
-                        <th scope="col" class="text-center"><i class="fas fa-cogs text-secondary"></i> Acciones</th>
-                    </tr>
+                <table class="table align-middle table-hover mb-0">
+                    <thead style="background-color: #f8f9fa;">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Identificación</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @if (!Model.Any())
                         {
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-3">
-                                    <i class="fas fa-info-circle"></i> No hay afiliados registrados
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-info-circle me-1"></i> No hay afiliados en esta lista
                                 </td>
                             </tr>
                         }
@@ -41,16 +59,18 @@
                         {
                             @foreach (var user in Model)
                             {
-                                <tr>
+                                <tr class="text-center">
                                     <td>@user.Id</td>
                                     <td>
                                         @if (!string.IsNullOrEmpty(user.Picture))
                                         {
-                                            <img src="@user.Picture" alt="Foto de @user.Name"
-                                                 class="rounded-circle zoomable-photo"
-                                                 style="width:40px; height:40px; object-fit:cover; cursor:pointer;"
-                                                 data-bs-toggle="modal" data-bs-target="#photoModal"
-                                                 data-photo="@user.Picture" data-name="@user.Name" />
+                                            <img src="@user.Picture"
+                                                 class="rounded-circle shadow-sm zoomable-photo"
+                                                 style="width:45px; height:45px; object-fit:cover; cursor:pointer;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#photoModal"
+                                                 data-photo="@user.Picture"
+                                                 data-name="@user.Name" />
                                         }
                                         else
                                         {
@@ -60,15 +80,26 @@
                                     <td>@user.Name</td>
                                     <td>@user.Identification</td>
                                     <td>@user.Phone</td>
-                                    <td class="text-center">
-                                        <a class="btn btn-sm btn-outline-primary me-1" title="Editar" asp-action="Edit" asp-route-id="@user.Id" asp-controller="Admin">
+                                    <td>
+                                        @if (user.IsActive)
+                                        {
+                                            <span class="badge bg-success">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary me-1" title="Editar"
+                                           asp-action="Edit" asp-route-id="@user.Id">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form asp-action="Delete" asp-route-id="@user.Id" asp-controller="Admin" class="d-inline delete-form">
-                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <a asp-action="ToggleStatus" asp-route-id="@user.Id"
+                                           class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")"
+                                           title="@(user.IsActive ? "Desactivar" : "Activar")">
+                                            <i class="fas @(user.IsActive ? "fa-user-slash" : "fa-user-check")"></i>
+                                        </a>
                                         <a class="btn btn-sm btn-outline-info me-1" title="Información" 
                                            asp-action="Infor"  asp-controller="Admin" asp-route-id="@user.Id" >
                                             <i class="fas fa-circle-info"></i>
@@ -83,44 +114,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        @if (TempData["message"] != null)
-        {
-            <text>
-        Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: '@Html.Raw(TempData["message"])',
-            timer: 2000,
-            showConfirmButton: false
-        });
-        </text>
-        }
-
-        // Confirmación de eliminación
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "No podrás revertir esta acción.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    });
-</script>
-}
