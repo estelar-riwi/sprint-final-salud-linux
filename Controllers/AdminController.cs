@@ -184,6 +184,13 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    public IActionResult Infor(int id)
+    {
+        var userr =  _context.Users.Find(id);
+        return View(userr);
+    }
+    
+
     public IActionResult History()
     {
         return View();

@@ -2,11 +2,12 @@
     ViewData["Title"] = "Solicitar Turno";
 }
 
-<div class="text-center mt-5">
-    <h2>🎫 Solicitar Turno</h2>
-    <p>Presiona el botón para obtener tu número de turno.</p>
-
-    <form asp-action="RequestTurnPost" method="post">
-        <button type="submit" class="btn btn-success btn-lg mt-3">Obtener Turno</button>
-    </form>
+<div class="d-flex justify-content-center align-items-center bg-light" style="height: 100vh;">
+    <div class="card shadow-lg border-0 p-5 text-center" style="width: 420px; border-radius: 1.5rem;">
+        <h2>🎫 Solicitar Turno</h2>
+        <p class="text-secondary mb-4">Bienvenido <br>Presiona el botón para solicitar tu turno y estar pendiente al llamado en pantalla.</p>
+        <form asp-action="RequestTurnPost" method="post">
+            <button type="submit" class="btn btn-primary btn-lg mt-3">Obtener Turno</button>
+        </form>
+    </div>
 </div>
