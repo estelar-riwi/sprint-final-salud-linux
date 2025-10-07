@@ -10,7 +10,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar -->
     <nav class="sidebar d-flex flex-column p-3 shadow-lg">
         <a class="navbar-brand mb-4 fw-bold text-white text-center" 
            asp-area="" asp-controller="Home" asp-action="Index">
@@ -36,8 +35,7 @@
             </li>
         </ul>
     </nav>
-
-    <!-- Contenido principal -->
+    
     <div class="content">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -59,8 +57,6 @@
                 </div>
             </div>
         </footer>
-
-
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -70,4 +66,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
