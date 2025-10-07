@@ -1,8 +1,51 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <section class="text-center p-5 rounded shadow-lg" style="background: linear-gradient(135deg, #007bff, #00c6ff); color: white;">
+        <h1 class="display-4 fw-bold mb-3">👋 ¡Bienvenido a <span style="color: #ffe600;">Salud Linux</span>!</h1>
+        <p class="lead mb-4">
+            Un sistema diseñado para la <strong>gestión eficiente de afiliados</strong>, 
+            donde podrás administrar registros, mantener la información actualizada y brindar una mejor experiencia a los usuarios.
+        </p>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-light btn-lg fw-bold shadow">
+            🚀 Ingresar al Sistema
+        </a>
+    </section>
+
+    <!-- Sección informativa -->
+    <section class="row text-center mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title">📋 Gestión de Afiliados</h5>
+                    <p class="card-text">Accede al listado completo de afiliados y administra su información de manera rápida y sencilla.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title">🔒 Seguridad</h5>
+                    <p class="card-text">La información se maneja de manera segura y confiable, siguiendo buenas prácticas de desarrollo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title">⚡ Eficiencia</h5>
+                    <p class="card-text">Optimiza los procesos administrativos para mejorar la atención a los usuarios.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="d-flex justify-content-center mt-3">
+        <form asp-controller="Admin" asp-action="TurnView" method="post">
+            <button type="submit" class="btn btn-primary">Llamar siguiente</button>
+        </form>
+    </div>
 </div>
+    

@@ -1,0 +1,139 @@
+@model sprint_final_salud_linux.Models.User
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i> 
+                        Editar Usuario
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Update" asp-route-Id="@Model.Id" method="post">
+                        <!-- FOTO ACTUAL -->
+                        <div class="text-center mb-3">
+                            <img id="currentPhoto" 
+                                 src="@(!string.IsNullOrEmpty(Model.Picture) ? Model.Picture : "https://via.placeholder.com/120x120.png?text=Sin+Foto")" 
+                                 alt="Foto actual" 
+                                 class="rounded-circle border shadow-sm" 
+                                 style="width:120px; height:120px; object-fit:cover;" />
+                        </div>
+
+                        <!-- CÁMARA -->
+                        <div class="text-center mb-3">
+                            <video id="video" autoplay playsinline class="border rounded-3 shadow-sm" style="width:100%; max-height:300px; display:none;"></video>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                            <input type="hidden" name="photoBase64" id="photoBase64" />
+                            <div class="mt-2">
+                                <button type="button" id="startCamera" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-camera"></i> Activar cámara
+                                </button>
+                                <button type="button" id="takePhoto" class="btn btn-sm btn-success" style="display:none;">
+                                    <i class="fas fa-check"></i> Tomar foto
+                                </button>
+                                <button type="button" id="cancelPhoto" class="btn btn-sm btn-danger" style="display:none;">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- CAMPOS DE INFORMACIÓN -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="fas fa-user text-success me-1"></i> Nombre completo
+                            </label>
+                            <input asp-for="Name" class="form-control rounded-3" placeholder="Ej: Juan Pérez" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Identification" class="form-label fw-semibold">
+                                <i class="fas fa-id-card text-info me-1"></i> Identificación
+                            </label>
+                            <input asp-for="Identification" class="form-control rounded-3" placeholder="Ej: 1234567890" />
+                            <span asp-validation-for="Identification" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label fw-semibold">
+                                <i class="fas fa-phone text-warning me-1"></i> Teléfono
+                            </label>
+                            <input asp-for="Phone" class="form-control rounded-3" placeholder="Ej: +57 300 123 4567" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-3">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-3 px-4">
+                                <i class="fas fa-save me-1"></i> Actualizar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photoBase64 = document.getElementById('photoBase64');
+    const startCamera = document.getElementById('startCamera');
+    const takePhoto = document.getElementById('takePhoto');
+    const cancelPhoto = document.getElementById('cancelPhoto');
+    const currentPhoto = document.getElementById('currentPhoto');
+
+    let stream = null;
+
+    startCamera.addEventListener('click', async () => {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        startCamera.style.display = 'none';
+        takePhoto.style.display = 'inline-block';
+        cancelPhoto.style.display = 'inline-block';
+        currentPhoto.style.display = 'none';
+    });
+
+    takePhoto.addEventListener('click', () => {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        photoBase64.value = dataURL;
+
+        currentPhoto.src = dataURL;
+        currentPhoto.style.display = 'block';
+        video.style.display = 'none';
+
+        takePhoto.style.display = 'none';
+        cancelPhoto.style.display = 'none';
+        startCamera.style.display = 'inline-block';
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    cancelPhoto.addEventListener('click', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        video.style.display = 'none';
+        startCamera.style.display = 'inline-block';
+        takePhoto.style.display = 'none';
+        cancelPhoto.style.display = 'none';
+        currentPhoto.style.display = 'block';
+    });
+</script>
+}
