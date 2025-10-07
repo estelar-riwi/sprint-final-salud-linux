@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Reiniciar Turnos";
+}
+
+<div class="text-center mt-5">
+    <h2>♻️ Reiniciar Turnos</h2>
+    <p>Esto pondrá el turno actual en 0 y el siguiente en 1.</p>
+
+    <form asp-action="ResetTurnsConfirmed" method="post">
+        <button type="submit" class="btn btn-danger btn-lg mt-3">
+            Reiniciar
+        </button>
+    </form>
+</div>
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-success mt-4">
+        @TempData["message"]
+    </div>
+}

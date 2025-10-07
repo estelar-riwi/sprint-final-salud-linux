@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Solicitar Turno";
+}
+
+<div class="text-center mt-5">
+    <h2>🎫 Solicitar Turno</h2>
+    <p>Presiona el botón para obtener tu número de turno.</p>
+
+    <form asp-action="RequestTurnPost" method="post">
+        <button type="submit" class="btn btn-success btn-lg mt-3">Obtener Turno</button>
+    </form>
+</div>
