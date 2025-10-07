@@ -8,10 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/sprint_final_salud_linux.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    @RenderSection("Styles", required: false)
 </head>
 <body>
-    <!-- Sidebar -->
     <nav class="sidebar d-flex flex-column p-3 shadow-lg">
         <a class="navbar-brand mb-4 fw-bold text-white text-center" 
            asp-area="" asp-controller="Home" asp-action="Index">
@@ -37,8 +35,7 @@
             </li>
         </ul>
     </nav>
-
-    <!-- Contenido principal -->
+    
     <div class="content">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -54,7 +51,7 @@
                     <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">
                         <i class="fas fa-shield-alt me-1"></i> Privacidad
                     </a>
-                    <a asp-area="" asp-controller="Home" asp-action="Help" class="footer-link ms-3">
+                    <a href="#" class="footer-link ms-3">
                         <i class="fas fa-info-circle me-1"></i> Ayuda
                     </a>
                 </div>
@@ -71,4 +68,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
