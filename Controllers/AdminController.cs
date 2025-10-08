@@ -181,8 +181,12 @@ namespace sprint_final_salud_linux.Controllers
                 _context.Turns.Add(turn);
             }
 
-            turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
-            turn.NextTurn = (turn.CurrentTurn % 100) + 1;
+            //turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
+            //turn.NextTurn = (turn.CurrentTurn % 100) + 1;
+            
+            //change:
+            turn.CurrentTurn = turn.NextTurn;
+            turn.NextTurn = (turn.NextTurn % 100) + 1;
 
             await _context.SaveChangesAsync();
 
