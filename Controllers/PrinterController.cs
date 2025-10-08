@@ -105,12 +105,12 @@ public class PrinterController : Controller
     }
     
     //-----------------------------------------------------------------------------
-    public async Task<IActionResult> PrintTurn(int prnTurn)
+    public async Task<IActionResult> PrintTurn()
     {
-        /*var TurnPrint = _context.TurnRequests.Find();*/
-        /*int turn = TurnPrint.;*/
+        var indTurn = _context.Turns.Find("1");
         string date = DateTime.Now.ToString("dd/MM/yyyy");
-        int printTurn = prnTurn;
+        
+        
 
         using (var fs = new FileStream("/dev/usb/lp0", FileMode.Open, FileAccess.Write))
         {
@@ -142,7 +142,7 @@ public class PrinterController : Controller
             fs.Flush();
         }
 
-        return Ok($"Turno {prnTurn} impreso correctamente.");
+        return Ok();
     }
     
     

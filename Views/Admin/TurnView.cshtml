@@ -41,27 +41,17 @@
         const ventanilla = document.getElementById("ventanilla");
         const fullscreenBtn = document.getElementById("fullscreenBtn");
         const panel = document.getElementById("turnPanel");
-        
-        const sonidos = {
-            1: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5115e3b7ef.mp3?filename=notification-3-20573.mp3"),
-            2: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_64b7b8d8cb.mp3?filename=ping-82822.mp3"),
-            3: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_4297b7cd69.mp3?filename=bell-125970.mp3"),
-            default: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5dfd26e2f1.mp3?filename=pop-94319.mp3")
-        };
 
         connection.on("ActualizarTurnos", (CurrentTurn, NextTurn, Ventanilla) => {
             if (actual.innerText !== CurrentTurn.toString()) {
                 actual.innerText = CurrentTurn;
                 siguiente.innerText = NextTurn;
-                
-                ventanilla.innerText = "Ventanilla: " + 
+
+                ventanilla.innerText = "Ventanilla: " +
                     (Ventanilla !== null && Ventanilla !== undefined && Ventanilla !== "" ? Ventanilla : "-");
-                
+
                 actual.classList.add("neon-anim", "fade-anim");
                 ventanilla.classList.add("glow-vent");
-
-                const sonido = sonidos[Ventanilla] || sonidos.default;
-                sonido.play();
 
                 setTimeout(() => {
                     actual.classList.remove("neon-anim", "fade-anim");
@@ -71,7 +61,7 @@
         });
 
         connection.start().catch(err => console.error(err.toString()));
-        
+
         fullscreenBtn.addEventListener("click", () => {
             if (!document.fullscreenElement) {
                 panel.requestFullscreen().then(() => {
@@ -95,7 +85,7 @@
             caret-color: transparent !important;
             cursor: default !important;
         }
-        
+
         .header-title {
             display: block;
             text-align: center;
@@ -120,7 +110,7 @@
                 text-shadow: 0 0 25px #00bfff, 0 0 60px #00bfff;
             }
         }
-        
+
         .fade-anim {
             animation: fadeInOut 1.5s ease-in-out infinite alternate;
         }
@@ -130,7 +120,7 @@
             50% { opacity: 0.7; transform: scale(1.1); }
             100% { opacity: 1; transform: scale(1); }
         }
-        
+
         .glow-vent {
             color: #00bfff !important;
             text-shadow:
@@ -139,7 +129,7 @@
                 0 0 30px #00bfff;
             transition: all 0.5s ease;
         }
-        
+
         #fullscreenBtn {
             border: none;
             color: #007bff;
@@ -151,7 +141,7 @@
             background-color: #007bff;
             color: #fff;
         }
-        
+
         .card {
             width: 100%;
             max-width: 650px;

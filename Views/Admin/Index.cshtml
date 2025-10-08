@@ -1,5 +1,8 @@
 @model IEnumerable<sprint_final_salud_linux.Models.User>
 
+<div id="lastTurn">
+</div>
+
 <div class="container my-5">
     <div class="text-center mb-4">
         <h2 class="fw-bold" style="color: #007bff;">
@@ -36,15 +39,15 @@
             <div class="table-responsive">
                 <table class="table align-middle table-hover mb-0">
                     <thead style="background-color: #f8f9fa;">
-                        <tr class="text-center">
-                            <th>ID</th>
-                            <th>Foto</th>
-                            <th>Nombre</th>
-                            <th>Identificación</th>
-                            <th>Teléfono</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Identificación</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
                     </thead>
                     <tbody>
                         @if (!Model.Any())
@@ -114,3 +117,41 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        // Crear conexión al hub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/turnos")
+            .build();
+
+        // Escuchar evento cuando un cliente solicita un nuevo turno
+        connection.on("NuevoTurnoSolicitado", (ultimoTurno) => {
+            const lastTurnDiv = document.getElementById("lastTurn");
+            lastTurnDiv.innerHTML = `Último turno pedido: <strong>${ultimoTurno}</strong>`;
+            lastTurnDiv.classList.add("highlight-turn");
+
+            // animación visual breve
+            setTimeout(() => {
+                lastTurnDiv.classList.remove("highlight-turn");
+            }, 2000);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+
+    <style>
+        #lastTurn, #currentTurn {
+            text-align: start;
+            font-size: 1.3rem;
+            margin-left: 20px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #0d6efd;
+            transition: all 0.4s ease;
+        }
+        #lastTurn.highlight-turn {
+            color: #198754;
+        }
+    </style>
+}

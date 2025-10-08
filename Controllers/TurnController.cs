@@ -27,11 +27,11 @@ public class TurnController :Controller
         var turn = _context.Turns.FirstOrDefault(t => t.Id == 1);
         if (turn == null)
         {
-            turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+            turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1, TurnRequest = 1 };
             _context.Turns.Add(turn);
             await _context.SaveChangesAsync();
         }
-        int assigned = turn.NextTurn;
+        int assigned = turn.TurnRequest;
         
         var request = new TurnRequest
         {
@@ -39,17 +39,15 @@ public class TurnController :Controller
         };
         _context.TurnRequests.Add(request);
         
-        turn.NextTurn = (turn.NextTurn % 100) + 1;
+        turn.TurnRequest = (turn.TurnRequest % 100) + 1;
 
         await _context.SaveChangesAsync();
 
         TempData["assignedTurn"] = assigned;
 
         // Avisar a todos que hay un nuevo turno pedido
-        /*await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);*/
-        /*PrinterController printnn = new PrinterController(_context);
-        printnn.PrintTurn(assigned);*/
-        RedirectToAction("PrintTurn", "Printer", new { prnTurn = assigned });
+        await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);
+
         return RedirectToAction("TurnConfirmation");
     }
 
