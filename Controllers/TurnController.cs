@@ -47,7 +47,9 @@ public class TurnController :Controller
 
         // Avisar a todos que hay un nuevo turno pedido
         /*await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);*/
-
+        /*PrinterController printnn = new PrinterController(_context);
+        printnn.PrintTurn(assigned);*/
+        RedirectToAction("PrintTurn", "Printer", new { prnTurn = assigned });
         return RedirectToAction("TurnConfirmation");
     }
 
