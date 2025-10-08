@@ -161,7 +161,7 @@ namespace sprint_final_salud_linux.Controllers
 
             if (turn == null)
             {
-                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1, TurnRequest = 1 };
                 _context.Turns.Add(turn);
                 _context.SaveChanges();
             }
@@ -177,12 +177,16 @@ namespace sprint_final_salud_linux.Controllers
 
             if (turn == null)
             {
-                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1, TurnRequest = 1 };
                 _context.Turns.Add(turn);
             }
 
-            turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
-            turn.NextTurn = (turn.CurrentTurn % 100) + 1;
+            //turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
+            //turn.NextTurn = (turn.CurrentTurn % 100) + 1;
+            
+            //change:
+            turn.CurrentTurn = turn.NextTurn;
+            turn.NextTurn = (turn.NextTurn % 100) + 1;
 
             await _context.SaveChangesAsync();
 
@@ -211,13 +215,14 @@ namespace sprint_final_salud_linux.Controllers
 
             if (turn == null)
             {
-                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1 };
+                turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1, TurnRequest = 1};
                 _context.Turns.Add(turn);
             }
             else
             {
                 turn.CurrentTurn = 0;
                 turn.NextTurn = 1;
+                turn.TurnRequest = 1;
             }
 
             await _context.SaveChangesAsync();
