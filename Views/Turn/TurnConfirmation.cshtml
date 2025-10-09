@@ -1,43 +1,36 @@
 @{
-    ViewData["Title"] = "Turno Asignado";
+    ViewData["Title"] = "Confirmación de Turno";
 }
-<meta http-equiv="refresh" content="4;url=/Turn/RequestTurn" />
 
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
-    <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
-        <div class="card-header bg-primary text-white text-center fw-bold position-relative">
-            <span class="header-title">
-                <i class="fas fa-check-circle me-2"></i> Turno Asignado
-            </span>
+    <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 600px;">
+        <div class="card-header bg-success text-white text-center fw-bold">
+            <i class="fas fa-check-circle me-2"></i> Turno Asignado
         </div>
         <div class="card-body text-center py-5">
             <p class="fs-5 text-secondary fw-semibold mb-3">✅ ¡Tu turno ha sido asignado correctamente!</p>
             <p class="fs-6 text-muted">Tu número de turno es:</p>
-            <h1 class="display-1 text-primary fw-bold">@ViewBag.Turno</h1>
+            <h1 id="turnoNumero" class="display-1 text-success fw-bold">-</h1>
             <p class="mt-4 text-muted">Por favor, espera a que sea llamado en pantalla.</p>
         </div>
     </div>
 </div>
 
-<style>
-    .header-title {
-        display: block;
-        text-align: center;
-        width: 100%;
-    }
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+const turnoNumero = document.getElementById("turnoNumero");
+const connection = new signalR.HubConnectionBuilder().withUrl("/turnos").build();
 
-    .card {
-        width: 100%;
-        max-width: 650px;
-    }
+connection.on("NuevoTurnoSolicitado",(assignedTurn)=>{
+    turnoNumero.textContent = assignedTurn;
+});
 
-    h1.display-1 {
-        font-size: 6rem;
-    }
-
-    @@media (max-width: 768px) {
-        h1.display-1 {
-            font-size: 4rem;
-        }
-    }
+connection.start().catch(err=>console.error(err.toString()));
+</script>
+    <style>
+.card{width:100%;max-width:600px;}
+h1.display-1{font-size:6rem;}
+        @@media(max-width:768px){h1.display-1{font-size:4rem;}}
 </style>
+}
