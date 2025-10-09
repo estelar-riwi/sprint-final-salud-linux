@@ -260,6 +260,14 @@ namespace sprint_final_salud_linux.Controllers
         }
 
         // ✅ Otras vistas
+        
+        public IActionResult Infor(int id)
+        {
+            var userr =  _context.Users.Find(id);
+            return View(userr);
+        }
+    
+    
         public IActionResult Historial()
         {
             var historial = _context.TurnRequests

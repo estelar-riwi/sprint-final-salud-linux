@@ -1,20 +1,20 @@
 @model sprint_final_salud_linux.Models.Turn
 @{
-    ViewData["Title"] = "Pantalla de Turnos";
+    ViewData["Title"] = " Turnos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
     <div id="turnPanel" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+        <!-- Header -->
         <div class="card-header bg-primary text-white text-center fw-bold position-relative">
             <span class="header-title">
-                <i class="fas fa-bell me-2"></i> Panel de Turnos - Sala de Espera
+                <i class="fas fa-bell me-2"></i> Turnos - Sala de Espera
             </span>
             <button id="fullscreenBtn" class="btn btn-light btn-sm fw-bold position-absolute end-0 me-3">
                 <i class="fas fa-expand"></i> Pantalla completa
             </button>
         </div>
-
+        
         <div class="card-body text-center py-5">
             <h4 class="text-secondary fw-semibold mb-3">Turno actual:</h4>
             <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">@Model.CurrentTurn</h1>
@@ -22,7 +22,6 @@
             <h5 id="ventanilla" class="text-info fw-bold fs-3 mt-2"></h5>
 
             <hr class="my-4" />
-
             <h5 class="text-muted fw-semibold mb-3">Siguiente:</h5>
             <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">@Model.NextTurn</h2>
         </div>
