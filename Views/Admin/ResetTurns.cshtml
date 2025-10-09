@@ -17,7 +17,8 @@
                 <button type="submit" class="btn btn-danger btn-lg px-5">Reiniciar</button>
             </form>
 
-            @if(TempData["message"]!=null){
+            @if (TempData["message"] != null)
+            {
                 <div class="alert alert-success mt-4">@TempData["message"]</div>
             }
         </div>
@@ -25,8 +26,31 @@
 </div>
 
 <style>
-.header-title{text-align:center;}
-#resetPanel button{user-select:none;cursor:pointer;}
-#resetPanel button:hover{background-color:#c82333;}
-@@media(max-width:768px){#resetPanel .card-body p{font-size:1.2rem;}#resetPanel button{font-size:1.25rem;padding:0 2rem;}}
+    .header-title {
+        text-align: center;
+    }
+
+    #resetPanel button {
+        user-select: none;
+        cursor: pointer;
+    }
+
+    #resetPanel button:hover {
+        background-color: #c82333;
+    }
+
+    #resetPanel .card-body p {
+        text-align: justify; 
+    }
+
+    @@media (max-width:768px) {
+        #resetPanel .card-body p {
+            font-size: 1.2rem;
+            text-align: justify;
+        }
+        #resetPanel button {
+            font-size: 1.25rem;
+            padding: 0 2rem;
+        }
+    }
 </style>
