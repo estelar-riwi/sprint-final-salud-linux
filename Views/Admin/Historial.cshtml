@@ -1,0 +1,35 @@
+@model List<sprint_final_salud_linux.Models.TurnRequest>
+@{
+    ViewData["Title"] = "Historial de Turnos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}   
+
+<div class="card mt-4 bg-primary text-white p-3 rounded-4 shadow-lg">
+    <h4 class="text-center mb-3">📜 Historial de Turnos</h4>
+
+    <table class="table table-striped table-hover table-bordered bg-white text-dark rounded">
+        <thead class="table-primary text-center">
+        <tr>
+            <th>#</th>
+            <th>Turno</th>
+            <th>Caja</th>
+            <th>Fecha y Hora</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="text-center">
+                <td>@item.Id</td>
+                <td>@item.Number</td>
+                <td>@item.Window</td>
+                <td>@item.CreatedAt.ToString("g")</td>
+                <td class="fw-bold @(item.IsServed ? "text-success" : "text-danger")">
+                    @(item.IsServed ? "Atendido" : "Pendiente")
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
