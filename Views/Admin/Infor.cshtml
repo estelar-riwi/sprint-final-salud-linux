@@ -13,19 +13,30 @@
             <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-danger">
                 Volver
             </a>
-            <a asp-controller="Printer" asp-action="PrintPdff" asp-route-id="@Model.Id" onclick="printCarnet()" class="btn btn-outline-success">
+            <button asp-controller="Printer" asp-action="PrintPdff" asp-route-id="@Model.Id" onclick="printLicense(1)" class="btn btn-outline-success">
                 <i class="fas fa-print"></i> Imprimir
-            </a>
+            </button>
         </div>
     </div>
 </div>
 @section Scripts
 {
     <script>
-  function printCarnet(userId) {
-    fetch(`/Admin/PrintPdff/${userId}`)
-      .then(() => alert("Carnet enviado a imprimir"))
-      .catch(() => alert("Error al imprimir"));
-  }
+function printLicense(userId) {
+    fetch(`/PrintPdff/${userId}`, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (rbuttone.ok) {
+            alert("Carnet enviado a la impresora correctamente.");
+        } else {
+            alert("Error al imprimir el carnet.");
+        }
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud de impresión:', error);
+        alert("Error de conexión con el servidor.");
+    });
+}
 </script>
 }

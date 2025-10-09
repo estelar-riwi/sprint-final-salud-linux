@@ -37,6 +37,9 @@ public class PrinterController : Controller
 
         using (var fs = new FileStream("/dev/usb/lp0", FileMode.Open, FileAccess.Write))
         {
+            byte[] center = { 0x1B, 0x61, 0x01 };
+            fs.Write(center, 0, center.Length);
+            
             // Centrar título
             fs.Write(new byte[] { 0x1D, 0x21, 0x11 }, 0, 3);
             byte[] title = Encoding.UTF8.GetBytes("---------------\nCARNET RIWI\n\n");
@@ -50,8 +53,7 @@ public class PrinterController : Controller
 
             // --- QR con el documento ---
             // --- Alinear al centro ---
-            byte[] center = { 0x1B, 0x61, 0x01 };
-            fs.Write(center, 0, center.Length);
+            
 
 // --- Tamaño del QR (8 = grande, puedes probar entre 1 y 16) ---
             byte[] sizeQR = { 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x08 };
@@ -103,12 +105,12 @@ public class PrinterController : Controller
         {
             // Centrar título
             fs.Write(new byte[] {0x1B, 0x61, 0x01 }, 0, 3);
-            byte[] title = Encoding.UTF8.GetBytes("--------------\nTU TURNO\n\n");
+            byte[] title = Encoding.UTF8.GetBytes("----------------\nTU TURNO\n\n");
             fs.Write(title, 0, title.Length);
 
             // Alinear izquierda
             fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
-            string data = $" {printTurn}\n--------------- \n {date}\n---------------";
+            string data = $" {printTurn}\n--------------- \n{date}\n----------------";
             byte[] body = Encoding.UTF8.GetBytes(data);
             fs.Write(body, 0, body.Length);
 
