@@ -3,39 +3,100 @@
 }
 
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
-    <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+    <div id="turnCard" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
         <div class="card-header bg-primary text-white text-center fw-bold position-relative">
-            <span class="header-title">
-                <i class="fas fa-ticket-alt me-2"></i> Solicitar Turno
-            </span>
+            <span class="header-title"><i class="fas fa-ticket-alt me-2"></i> Solicitar Turno</span>
+            <button id="fullscreenBtn" class="btn btn-light btn-sm fw-bold position-absolute end-0 me-3">
+                <i class="fas fa-expand"></i> Pantalla completa
+            </button>
         </div>
-        <div class="card-body text-center py-5">
-            <p class="fs-5 text-secondary fw-semibold mb-4">Presiona el botón para obtener tu número de turno.</p>
 
-            <form asp-action="RequestTurnPost" method="post">
-                <button type="submit" class="btn btn-primary btn-lg fw-bold">
-                    <i class="fas fa-plus-circle me-2"></i> Obtener Turno
-                </button>
-            </form>
+        <div class="card-body text-center py-5">
+            <div id="solicitarTurnoSection">
+                <p class="fs-5 text-secondary fw-semibold mb-4">
+                    Presiona el botón para obtener tu número de turno.
+                </p>
+                <form id="turnForm" asp-action="RequestTurnPost" method="post">
+                    <button type="submit" id="btnTurno" class="btn btn-primary btn-lg fw-bold">
+                        <i class="fas fa-plus-circle me-2"></i> Obtener Turno
+                    </button>
+                </form>
+            </div>
+            <div id="turnoAsignadoSection" class="d-none">
+                <p class="fs-5 text-secondary fw-semibold mb-3">✅ ¡Tu turno ha sido asignado correctamente!</p>
+                <p class="fs-6 text-muted">Tu número de turno es:</p>
+                <h1 id="turnoNumero" class="display-1 text-primary fw-bold">-</h1>
+                <p class="mt-4 text-muted">Por favor, espera a que sea llamado en pantalla.</p>
+                <p id="autoBackMsg" class="text-secondary mt-3 small"></p>
+            </div>
         </div>
     </div>
 </div>
 
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const panel = document.getElementById("turnCard");
+const turnForm = document.getElementById("turnForm");
+const solicitarTurnoSection = document.getElementById("solicitarTurnoSection");
+const turnoAsignadoSection = document.getElementById("turnoAsignadoSection");
+const turnoNumero = document.getElementById("turnoNumero");
+const autoBackMsg = document.getElementById("autoBackMsg");
+
+fullscreenBtn.addEventListener("click", ()=>{
+    if(!document.fullscreenElement){
+        panel.requestFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-compress"></i> Salir';});
+    } else {
+        document.exitFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-expand"></i> Pantalla completa';});
+    }
+});
+
+const connection = new signalR.HubConnectionBuilder().withUrl("/turnos").build();
+connection.start().catch(err=>console.error(err.toString()));
+
+turnForm.addEventListener("submit", async (event)=>{
+    event.preventDefault();
+    const btnTurno = document.getElementById("btnTurno");
+    btnTurno.disabled=true;
+    btnTurno.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i> Generando...';
+
+    try{
+        const response = await fetch(turnForm.action,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}});
+        const data = await response.json();
+        const turno = data.turno ?? "N/A";
+
+        solicitarTurnoSection.classList.add("d-none");
+        turnoAsignadoSection.classList.remove("d-none");
+        turnoNumero.textContent = turno;
+
+        let seconds = 4;
+        autoBackMsg.textContent=`Volviendo al inicio en ${seconds} segundos...`;
+        const countdown = setInterval(()=>{
+            seconds--;
+            autoBackMsg.textContent=`Volviendo al inicio en ${seconds} segundos...`;
+            if(seconds<=0){
+                clearInterval(countdown);
+                turnoAsignadoSection.classList.add("d-none");
+                solicitarTurnoSection.classList.remove("d-none");
+            }
+        },1000);
+    } catch(err){
+        alert("Ocurrió un error al asignar el turno."); console.error(err);
+    } finally{
+        btnTurno.disabled=false;
+        btnTurno.innerHTML='<i class="fas fa-plus-circle me-2"></i> Obtener Turno';
+    }
+});
+</script>
 <style>
-    .header-title {
-        display: block;
-        text-align: center;
-        width: 100%;
-    }
-
-    .card {
-        width: 100%;
-        max-width: 650px;
-    }
-
-    @@media (max-width: 768px) {
-        button.btn {
-            font-size: 1.1rem;
-        }
-    }
+.header-title{text-align:center;}
+.card{width:100%;max-width:650px;}
+h1.display-1{font-size:6rem;}
+#fullscreenBtn{border:none;color:#007bff;background:#fff;transition:0.3s;}
+#fullscreenBtn:hover{background:#007bff;color:#fff;}
+@@media(max-width:768px){h1.display-1{font-size:4rem;}button.btn{font-size:1.1rem;}}
+body:fullscreen .container{padding:0;margin:0;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;}
+body:fullscreen .card{width:95vw;height:95vh;}
 </style>
+}
