@@ -1,15 +1,56 @@
 @{
     ViewData["Title"] = "Confirmación de Turno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .card {
+        width: 100%;
+        max-width: 600px;
+        text-align: justify;
+    }
+
+    h1.display-1, p.display-text {
+        user-select: none;
+        cursor: default;
+    }
+
+    h1.display-1 { font-size: 6rem; }
+    
+    .neon-anim {
+        color: #28a745;
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 40px #28a745, 0 0 80px #28a745;
+        animation: glow 1.2s ease-in-out infinite alternate;
+    }
+
+    @@keyframes glow {
+        from { text-shadow: 0 0 5px #28a745, 0 0 15px #28a745; }
+        to   { text-shadow: 0 0 25px #71e07a, 0 0 60px #71e07a; }
+    }
+    
+    .fade-anim {
+        animation: fadeInOut 1.5s ease-in-out infinite alternate;
+    }
+
+    @@keyframes fadeInOut {
+        0%   { opacity: 1; transform: scale(1); }
+        50%  { opacity: 0.7; transform: scale(1.1); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    @@media(max-width: 768px) {
+        h1.display-1 { font-size: 4rem; }
+    }
+</style>
+
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
-    <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 600px;">
+    <div class="card shadow-lg border-0 rounded-4 w-100">
         <div class="card-header bg-success text-white text-center fw-bold">
             <i class="fas fa-check-circle me-2"></i> Turno Asignado
         </div>
         <div class="card-body text-center py-5">
             <p class="fs-5 text-secondary fw-semibold mb-3">✅ ¡Tu turno ha sido asignado correctamente!</p>
-            <p class="fs-6 text-muted">Tu número de turno es:</p>
+            <p id="turnoTexto" class="fs-6 text-success display-text">Tu número de turno es:</p>
             <h1 id="turnoNumero" class="display-1 text-success fw-bold">-</h1>
             <p class="mt-4 text-muted">Por favor, espera a que sea llamado en pantalla.</p>
         </div>
@@ -17,20 +58,25 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script>
-const turnoNumero = document.getElementById("turnoNumero");
-const connection = new signalR.HubConnectionBuilder().withUrl("/turnos").build();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const turnoNumero = document.getElementById("turnoNumero");
+    const turnoTexto = document.getElementById("turnoTexto");
+    
+    const connection = new signalR.HubConnectionBuilder().withUrl("/turnos").build();
+    
+    connection.on("NuevoTurnoSolicitado", (assignedTurn) => {
+        turnoNumero.textContent = assignedTurn;
+        
+        turnoNumero.classList.add("neon-anim", "fade-anim");
+        turnoTexto.classList.add("neon-anim", "fade-anim");
+        
+        setTimeout(() => {
+            turnoNumero.classList.remove("neon-anim", "fade-anim");
+            turnoTexto.classList.remove("neon-anim", "fade-anim");
+        }, 3000);
+    });
 
-connection.on("NuevoTurnoSolicitado",(assignedTurn)=>{
-    turnoNumero.textContent = assignedTurn;
-});
-
-connection.start().catch(err=>console.error(err.toString()));
+    connection.start().catch(err => console.error(err.toString()));
 </script>
-    <style>
-.card{width:100%;max-width:600px;}
-h1.display-1{font-size:6rem;}
-        @@media(max-width:768px){h1.display-1{font-size:4rem;}}
-</style>
 }
