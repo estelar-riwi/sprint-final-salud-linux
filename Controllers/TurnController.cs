@@ -31,21 +31,25 @@ public class TurnController :Controller
             _context.Turns.Add(turn);
             await _context.SaveChangesAsync();
         }
+
         int assigned = turn.TurnRequest;
-        
+
         var request = new TurnRequest
         {
             Number = assigned,
+            IsServed = false,           // aún no atendido
+            CreatedAt = DateTime.Now
         };
+
         _context.TurnRequests.Add(request);
-        
+
         turn.TurnRequest = (turn.TurnRequest % 100) + 1;
 
         await _context.SaveChangesAsync();
 
         TempData["assignedTurn"] = assigned;
 
-        // Avisar a todos que hay un nuevo turno pedido
+        // Notificar a los paneles en tiempo real
         await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);
 
         return RedirectToAction("TurnConfirmation");

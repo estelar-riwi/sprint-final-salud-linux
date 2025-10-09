@@ -171,30 +171,57 @@ namespace sprint_final_salud_linux.Controllers
 
         // ✅ Llamar siguiente turno
         [HttpPost, ActionName("TurnView")]
-        public async Task<IActionResult> NextTurn()
+        public async Task<IActionResult> NextTurn(string windowName)
         {
+            // Si no se envía ventanilla, asignar por defecto
+            windowName ??= "Caja 1";
+
             var turn = await _context.Turns.FindAsync(1);
 
             if (turn == null)
             {
                 turn = new Turn { Id = 1, CurrentTurn = 0, NextTurn = 1, TurnRequest = 1 };
                 _context.Turns.Add(turn);
+                await _context.SaveChangesAsync();
             }
 
-            //turn.CurrentTurn = (turn.CurrentTurn % 100) + 1;
-            //turn.NextTurn = (turn.CurrentTurn % 100) + 1;
-            
-            //change:
+            // Actualizamos el turno actual
             turn.CurrentTurn = turn.NextTurn;
             turn.NextTurn = (turn.NextTurn % 100) + 1;
 
+            // ✅ Buscar si ese turno ya existe en TurnRequests
+            var existingRequest = _context.TurnRequests.FirstOrDefault(t => t.Number == turn.CurrentTurn);
+            if (existingRequest != null)
+            {
+                existingRequest.IsServed = true;
+                existingRequest.Window = windowName;
+            }
+            else
+            {
+                // Si no existe, crearlo por seguridad
+                var newRequest = new TurnRequest
+                {
+                    Number = turn.CurrentTurn,
+                    IsServed = true,
+                    Window = windowName,
+                    CreatedAt = DateTime.Now
+                };
+                _context.TurnRequests.Add(newRequest);
+            }
+
             await _context.SaveChangesAsync();
 
-            await _hubContext.Clients.All.SendAsync("ActualizarTurnos", turn.CurrentTurn, turn.NextTurn);
+            // Notificar al panel de turnos
+            await _hubContext.Clients.All.SendAsync("ActualizarTurnos",
+                turn.CurrentTurn,
+                turn.NextTurn,
+                windowName
+            );
 
-            TempData["message"] = $"Se llamó al turno {turn.CurrentTurn}";
+            TempData["message"] = $"Se llamó al turno {turn.CurrentTurn} en {windowName}";
             return RedirectToAction(nameof(Index));
         }
+
 
         // ✅ Crear turno manualmente
         public IActionResult CreateTurnView()
@@ -233,7 +260,14 @@ namespace sprint_final_salud_linux.Controllers
         }
 
         // ✅ Otras vistas
-        public IActionResult History() => View();
+        public IActionResult Historial()
+        {
+            var historial = _context.TurnRequests
+                .OrderByDescending(h => h.CreatedAt)
+                .ToList();
+
+            return View(historial);
+        }
 
         public IActionResult UserConsultation() => View();
 
