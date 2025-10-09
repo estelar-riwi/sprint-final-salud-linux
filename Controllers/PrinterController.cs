@@ -26,24 +26,7 @@ public class PrinterController : Controller
     }
    
 
-    public async Task<IActionResult> Print()
-    {
-        
-        using (var fs = new FileStream("/dev/usb/lp0", FileMode.Open, FileAccess.Write))
-        using (var writer = new StreamWriter(fs))
-        {
-            writer.WriteLine("+--------------------------------+");
-            writer.WriteLine("|           CARNET RIWI           |");
-            writer.WriteLine("+--------------------------------+");
-            writer.WriteLine("|          Afiliado               |");
-            writer.WriteLine("+--------------------------------+");
-            writer.WriteLine("\n\n\n"); // espacio para cortar
-            writer.Flush();
-        }
-
-        return Ok();
-    }
-
+    [HttpGet("PrintPdff/{id}")]
     public async Task<IActionResult> PrintPdff(int id)
     {
         var UserPrint = _context.Users.Find(id);
@@ -56,12 +39,12 @@ public class PrinterController : Controller
         {
             // Centrar título
             fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
-            byte[] title = Encoding.UTF8.GetBytes("CARNET RIWI\n\n");
+            byte[] title = Encoding.UTF8.GetBytes("---------------\nCARNET RIWI\n\n");
             fs.Write(title, 0, title.Length);
 
             // Alinear izquierda
             fs.Write(new byte[] { 0x1B, 0x61, 0x01}, 0, 3);
-            string datos = $"{nombre}\n{documento}\n{rol}\n";
+            string datos = $"{nombre}\n \n{documento}\n---------------\n{rol}\n---------------\n";
             byte[] body = Encoding.UTF8.GetBytes(datos);
             fs.Write(body, 0, body.Length);
 
@@ -99,16 +82,20 @@ public class PrinterController : Controller
             fs.Write(Encoding.UTF8.GetBytes("\n\n\n"), 0, 3);
 
             fs.Flush();
+            
         }
 
+        
+        
         return Ok();
     }
     
     //-----------------------------------------------------------------------------
     public async Task<IActionResult> PrintTurn()
     {
-        var indTurn = _context.Turns.Find("1");
+        var indTurn = _context.Turns.Find(1);
         string date = DateTime.Now.ToString("dd/MM/yyyy");
+        var printTurn = indTurn.TurnRequest;
         
         
 
@@ -116,12 +103,12 @@ public class PrinterController : Controller
         {
             // Centrar título
             fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
-            byte[] title = Encoding.UTF8.GetBytes("TU TURNO\n\n");
+            byte[] title = Encoding.UTF8.GetBytes("--------------\nTU TURNO\n\n");
             fs.Write(title, 0, title.Length);
 
             // Alinear izquierda
             fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
-            string data = $"{printTurn} \n {date}";
+            string data = $" {printTurn}\n--------------- \n {date}\n---------------";
             byte[] body = Encoding.UTF8.GetBytes(data);
             fs.Write(body, 0, body.Length);
 

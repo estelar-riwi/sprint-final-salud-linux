@@ -24,6 +24,9 @@ public class TurnController :Controller
     [HttpPost]
     public async Task<IActionResult> RequestTurnPost()
     {
+        PrinterController printerController = new PrinterController(_context);
+        printerController.PrintTurn();
+
         var turn = _context.Turns.FirstOrDefault(t => t.Id == 1);
         if (turn == null)
         {
@@ -47,13 +50,16 @@ public class TurnController :Controller
 
         // Avisar a todos que hay un nuevo turno pedido
         await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);
-
+        
         return RedirectToAction("TurnConfirmation");
     }
 
     public IActionResult TurnConfirmation()
     {
         ViewBag.Turno = TempData["assignedTurn"];
+        
         return View();
     }
+    
+    
 }
