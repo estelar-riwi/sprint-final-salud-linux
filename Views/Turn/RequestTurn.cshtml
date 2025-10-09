@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Solicitar Turno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
@@ -24,14 +25,97 @@
             </div>
             <div id="turnoAsignadoSection" class="d-none">
                 <p class="fs-5 text-secondary fw-semibold mb-3">✅ ¡Tu turno ha sido asignado correctamente!</p>
-                <p class="fs-6 text-muted">Tu número de turno es:</p>
-                <h1 id="turnoNumero" class="display-1 text-primary fw-bold">-</h1>
+                <p id="turnoTexto" class="fs-6 text-success display-text">Tu número de turno es:</p>
+                <h1 id="turnoNumero" class="display-1 text-success fw-bold">-</h1>
                 <p class="mt-4 text-muted">Por favor, espera a que sea llamado en pantalla.</p>
                 <p id="autoBackMsg" class="text-secondary mt-3 small"></p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .header-title {
+        text-align: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 650px;
+        text-align: justify;
+    }
+
+    h1.display-1,
+    #turnoTexto {
+        user-select: none;
+        cursor: default;
+    }
+
+    h1.display-1 {
+        font-size: 6rem;
+    }
+
+    .neon-anim {
+        color: #28a745;
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 40px #28a745, 0 0 80px #28a745;
+        animation: glow 1.2s ease-in-out infinite alternate;
+    }
+
+    @@keyframes glow {
+        from {
+            text-shadow: 0 0 5px #28a745, 0 0 15px #28a745;
+        }
+        to {
+            text-shadow: 0 0 25px #71e07a, 0 0 60px #71e07a;
+        }
+    }
+
+    .fade-anim {
+        animation: fadeInOut 1.5s ease-in-out infinite alternate;
+    }
+
+    @@keyframes fadeInOut {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.1); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    #fullscreenBtn {
+        border: none;
+        color: #007bff;
+        background: #fff;
+        transition: 0.3s;
+    }
+
+    #fullscreenBtn:hover {
+        background: #007bff;
+        color: #fff;
+    }
+
+    @@media(max-width: 768px) {
+        h1.display-1 {
+            font-size: 4rem;
+        }
+        button.btn {
+            font-size: 1.1rem;
+        }
+    }
+
+    body:fullscreen .container {
+        padding: 0;
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    body:fullscreen .card {
+        width: 95vw;
+        height: 95vh;
+    }
+</style>
 
 @section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
@@ -42,61 +126,64 @@ const turnForm = document.getElementById("turnForm");
 const solicitarTurnoSection = document.getElementById("solicitarTurnoSection");
 const turnoAsignadoSection = document.getElementById("turnoAsignadoSection");
 const turnoNumero = document.getElementById("turnoNumero");
+const turnoTexto = document.getElementById("turnoTexto");
 const autoBackMsg = document.getElementById("autoBackMsg");
 
-fullscreenBtn.addEventListener("click", ()=>{
-    if(!document.fullscreenElement){
-        panel.requestFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-compress"></i> Salir';});
+fullscreenBtn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+        panel.requestFullscreen().then(()=>{ fullscreenBtn.innerHTML='<i class="fas fa-compress"></i> Salir'; });
     } else {
-        document.exitFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-expand"></i> Pantalla completa';});
+        document.exitFullscreen().then(()=>{ fullscreenBtn.innerHTML='<i class="fas fa-expand"></i> Pantalla completa'; });
     }
 });
 
 const connection = new signalR.HubConnectionBuilder().withUrl("/turnos").build();
-connection.start().catch(err=>console.error(err.toString()));
+connection.start().catch(err => console.error(err.toString()));
 
-turnForm.addEventListener("submit", async (event)=>{
+turnForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const btnTurno = document.getElementById("btnTurno");
-    btnTurno.disabled=true;
-    btnTurno.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i> Generando...';
+    btnTurno.disabled = true;
+    btnTurno.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Generando...';
 
-    try{
-        const response = await fetch(turnForm.action,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}});
+    try {
+        const response = await fetch(turnForm.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
         const data = await response.json();
         const turno = data.turno ?? "N/A";
 
         solicitarTurnoSection.classList.add("d-none");
         turnoAsignadoSection.classList.remove("d-none");
         turnoNumero.textContent = turno;
+        
+        turnoNumero.classList.add("neon-anim", "fade-anim");
+        turnoTexto.classList.add("neon-anim", "fade-anim");
+
+        setTimeout(() => {
+            turnoNumero.classList.remove("neon-anim", "fade-anim");
+            turnoTexto.classList.remove("neon-anim", "fade-anim");
+        }, 3000);
 
         let seconds = 4;
-        autoBackMsg.textContent=`Volviendo al inicio en ${seconds} segundos...`;
-        const countdown = setInterval(()=>{
+        autoBackMsg.textContent = `Volviendo al inicio en ${seconds} segundos...`;
+        const countdown = setInterval(() => {
             seconds--;
-            autoBackMsg.textContent=`Volviendo al inicio en ${seconds} segundos...`;
-            if(seconds<=0){
+            autoBackMsg.textContent = `Volviendo al inicio en ${seconds} segundos...`;
+            if (seconds <= 0) {
                 clearInterval(countdown);
                 turnoAsignadoSection.classList.add("d-none");
                 solicitarTurnoSection.classList.remove("d-none");
             }
-        },1000);
-    } catch(err){
-        alert("Ocurrió un error al asignar el turno."); console.error(err);
-    } finally{
-        btnTurno.disabled=false;
-        btnTurno.innerHTML='<i class="fas fa-plus-circle me-2"></i> Obtener Turno';
+        }, 1000);
+    } catch (err) {
+        alert("Ocurrió un error al asignar el turno.");
+        console.error(err);
+    } finally {
+        btnTurno.disabled = false;
+        btnTurno.innerHTML = '<i class="fas fa-plus-circle me-2"></i> Obtener Turno';
     }
 });
 </script>
-<style>
-.header-title{text-align:center;}
-.card{width:100%;max-width:650px;}
-h1.display-1{font-size:6rem;}
-#fullscreenBtn{border:none;color:#007bff;background:#fff;transition:0.3s;}
-#fullscreenBtn:hover{background:#007bff;color:#fff;}
-@@media(max-width:768px){h1.display-1{font-size:4rem;}button.btn{font-size:1.1rem;}}
-body:fullscreen .container{padding:0;margin:0;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;}
-body:fullscreen .card{width:95vw;height:95vh;}
-</style>
 }

@@ -3,18 +3,18 @@
     ViewData["Title"] = "Pantalla de Turno";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
     <div id="turnPanel" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+        <!-- Header -->
         <div class="card-header bg-primary text-white text-center fw-bold position-relative">
             <span class="header-title">
-                <i class="fas fa-bell me-2"></i> Panel de Turnos - Sala de Espera
+                <i class="fas fa-bell me-2"></i> Turnos - Sala de Espera
             </span>
             <button id="fullscreenBtn" class="btn btn-light btn-sm fw-bold position-absolute end-0 me-3">
                 <i class="fas fa-expand"></i> Pantalla completa
             </button>
         </div>
-
+        
         <div class="card-body text-center py-5">
             <h4 class="text-secondary fw-semibold mb-3">Turno actual:</h4>
             <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">@Model.CurrentTurn</h1>
@@ -25,6 +25,80 @@
         </div>
     </div>
 </div>
+
+<style>
+#actual, #siguiente, #ventanilla {
+    user-select: none;
+    cursor: default;
+    outline: none;
+    border: none;
+}
+
+.header-title { text-align: center; }
+.card {
+    width: 100%;
+    max-width: 650px;
+    text-align: justify; 
+}
+
+.neon-anim {
+    color: #007bff;
+    text-shadow: 0 0 10px #007bff, 0 0 20px #007bff, 0 0 40px #007bff, 0 0 80px #007bff;
+    animation: glow 1.2s ease-in-out infinite alternate;
+}
+
+@@keyframes glow {
+    from { text-shadow: 0 0 5px #007bff, 0 0 15px #007bff; }
+    to { text-shadow: 0 0 25px #00bfff, 0 0 60px #00bfff; }
+}
+
+.fade-anim { animation: fadeInOut 1.5s ease-in-out infinite alternate; }
+
+@@keyframes fadeInOut {
+    0% { opacity:1; transform: scale(1); }
+    50% { opacity:0.7; transform: scale(1.1); }
+    100% { opacity:1; transform: scale(1); }
+}
+
+.glow-vent {
+    color: #00bfff;
+    text-shadow: 0 0 5px #00bfff, 0 0 15px #00bfff, 0 0 30px #00bfff;
+    transition: all 0.5s ease;
+}
+
+#fullscreenBtn {
+    border: none;
+    color: #007bff;
+    background: #fff;
+    transition: 0.3s;
+}
+
+#fullscreenBtn:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+h1.turno-actual { font-size: 6rem; }
+h2.turno-siguiente { font-size: 3rem; }
+
+@@media(max-width:768px) {
+    h1.turno-actual { font-size: 4rem; }
+    h2.turno-siguiente { font-size: 2rem; }
+    #ventanilla { font-size: 1.5rem; }
+}
+
+body:fullscreen .container {
+    padding:0;
+    margin:0;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+body:fullscreen .card { width:95vw; height:95vh; }
+</style>
 
 @section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
@@ -52,30 +126,13 @@ connection.on("ActualizarTurnos", (CurrentTurn, NextTurn, Ventanilla) => {
 
 connection.start().catch(err => console.error(err.toString()));
 
+
 fullscreenBtn.addEventListener("click", () => {
     if (!document.fullscreenElement) {
-        panel.requestFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-compress"></i> Salir';});
+        panel.requestFullscreen().then(()=>{ fullscreenBtn.innerHTML='<i class="fas fa-compress"></i> Salir'; });
     } else {
-        document.exitFullscreen().then(()=>{fullscreenBtn.innerHTML='<i class="fas fa-expand"></i> Pantalla completa';});
+        document.exitFullscreen().then(()=>{ fullscreenBtn.innerHTML='<i class="fas fa-expand"></i> Pantalla completa'; });
     }
 });
 </script>
-
-<style>
-#actual,#siguiente,#ventanilla{user-select:none;cursor:default;outline:none;border:none;}
-.header-title{text-align:center;}
-.neon-anim{color:#007bff;text-shadow:0 0 10px #007bff,0 0 20px #007bff,0 0 40px #007bff,0 0 80px #007bff;animation:glow 1.2s ease-in-out infinite alternate;}
-@@keyframes glow{from{text-shadow:0 0 5px #007bff,0 0 15px #007bff;}to{text-shadow:0 0 25px #00bfff,0 0 60px #00bfff;}}
-.fade-anim{animation:fadeInOut 1.5s ease-in-out infinite alternate;}
-@@keyframes fadeInOut{0%{opacity:1;transform:scale(1);}50%{opacity:0.7;transform:scale(1.1);}100%{opacity:1;transform:scale(1);}}
-.glow-vent{color:#00bfff;text-shadow:0 0 5px #00bfff,0 0 15px #00bfff,0 0 30px #00bfff;transition:all 0.5s ease;}
-#fullscreenBtn{border:none;color:#007bff;background:#fff;transition:0.3s;}
-#fullscreenBtn:hover{background:#007bff;color:#fff;}
-.card{width:100%;max-width:650px;}
-h1.turno-actual{font-size:6rem;}
-h2.turno-siguiente{font-size:3rem;}
-@@media(max-width:768px){h1.turno-actual{font-size:4rem;}h2.turno-siguiente{font-size:2rem;}#ventanilla{font-size:1.5rem;}}
-body:fullscreen .container{padding:0;margin:0;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;}
-body:fullscreen .card{width:95vw;height:95vh;}
-</style>
 }
