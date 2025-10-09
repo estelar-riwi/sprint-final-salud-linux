@@ -7,4 +7,6 @@ public class Turn
     public int CurrentTurn { get; set; }
 
     public int NextTurn { get; set; }
+    
+    public int TurnRequest { get; set; }
 }

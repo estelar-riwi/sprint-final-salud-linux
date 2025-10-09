@@ -1,21 +1,56 @@
 @{
     ViewData["Title"] = "Reiniciar Turnos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center mt-5">
-    <h2>♻️ Reiniciar Turnos</h2>
-    <p>Esto pondrá el turno actual en 0 y el siguiente en 1.</p>
+<div class="container my-5 d-flex justify-content-center align-items-center text-center">
+    <div id="resetPanel" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+        <div class="card-header bg-primary text-white text-center fw-bold position-relative">
+            <span class="header-title"><i class="fas fa-redo me-2"></i> Reiniciar Turnos</span>
+        </div>
 
-    <form asp-action="ResetTurnsConfirmed" method="post">
-        <button type="submit" class="btn btn-danger btn-lg mt-3">
-            Reiniciar
-        </button>
-    </form>
+        <div class="card-body text-center py-5">
+            <h4 class="text-secondary fw-semibold mb-3">¿Desea reiniciar los turnos?</h4>
+            <p class="text-muted fs-5 mb-4">Esto pondrá el turno actual en 0 y el siguiente en 1.</p>
+
+            <form asp-action="ResetTurnsConfirmed" method="post">
+                <button type="submit" class="btn btn-danger btn-lg px-5">Reiniciar</button>
+            </form>
+
+            @if (TempData["message"] != null)
+            {
+                <div class="alert alert-success mt-4">@TempData["message"]</div>
+            }
+        </div>
+    </div>
 </div>
 
-@if (TempData["message"] != null)
-{
-    <div class="alert alert-success mt-4">
-        @TempData["message"]
-    </div>
-}
+<style>
+    .header-title {
+        text-align: center;
+    }
+
+    #resetPanel button {
+        user-select: none;
+        cursor: pointer;
+    }
+
+    #resetPanel button:hover {
+        background-color: #c82333;
+    }
+
+    #resetPanel .card-body p {
+        text-align: justify; 
+    }
+
+    @@media (max-width:768px) {
+        #resetPanel .card-body p {
+            font-size: 1.2rem;
+            text-align: justify;
+        }
+        #resetPanel button {
+            font-size: 1.25rem;
+            padding: 0 2rem;
+        }
+    }
+</style>

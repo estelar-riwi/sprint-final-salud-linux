@@ -38,21 +38,16 @@
                                 </div>
                             </div>
                             <div class="col-md-6 text-center">
-                                <h5 class="fw-bold mb-3">
-                                    <i class="fas fa-camera text-primary"></i> Tomar Foto
-                                </h5>
-                                <video id="video" width="250" height="180" autoplay class="border rounded mb-2"></video>
-                                <canvas id="canvas" width="250" height="180" style="display:none;"></canvas>
-                                <div class="d-grid gap-2 mb-3">
-                                    <button type="button" id="capture" class="btn btn-outline-primary">
-                                        <i class="fas fa-camera"></i> Capturar
-                                    </button>
+                                <video id="video" autoplay playsinline class="rounded shadow" style="width: 280px; height: 200px;"></video>
+                                <canvas id="canvas" style="display:none;"></canvas>
+                                <img id="preview" class="mt-3 rounded shadow" style="width:280px; display:none;" alt="Previsualización" />
+
+                                <div class="mt-3">
+                                    <button type="button" id="capture" class="btn btn-primary">📸 Capturar</button>
+                                    <button type="button" id="retake" class="btn btn-warning" style="display:none;">🔁 Repetir</button>
                                 </div>
-                                <div>
-                                    <h6 class="fw-bold">Preview:</h6>
-                                    <img id="preview" width="250" height="180" class="border rounded" />
-                                </div>
-                                <input type="hidden" name="photoBase64" id="photoBase64" />
+
+                                <input type="hidden" id="photoBase64" name="photoBase64" />
                             </div>
                         </div>
                         <div class="d-flex justify-content-between mt-4">
@@ -69,27 +64,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const captureButton = document.getElementById('capture');
-        const photoInput = document.getElementById('photoBase64');
-        const preview = document.getElementById('preview');
-        
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => video.srcObject = stream)
-            .catch(err => console.error("Error: " + err));
-        
-        captureButton.addEventListener('click', () => {
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL("image/png");
-            
-            photoInput.value = dataUrl;
-            
-            preview.src = dataUrl;
-        });
-    </script>
-}

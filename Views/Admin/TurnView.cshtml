@@ -1,30 +1,29 @@
 @model sprint_final_salud_linux.Models.Turn
 @{
-    ViewData["Title"] = "Pantalla de Turnos";
+    ViewData["Title"] = " Turnos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="container my-5 d-flex justify-content-center align-items-center text-center">
     <div id="turnPanel" class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 650px;">
+        <!-- Header -->
         <div class="card-header bg-primary text-white text-center fw-bold position-relative">
             <span class="header-title">
-                <i class="fas fa-bell me-2"></i> Panel de Turnos - Sala de Espera
+                <i class="fas fa-bell me-2"></i> Turnos - Sala de Espera
             </span>
             <button id="fullscreenBtn" class="btn btn-light btn-sm fw-bold position-absolute end-0 me-3">
                 <i class="fas fa-expand"></i> Pantalla completa
             </button>
         </div>
-
+        
         <div class="card-body text-center py-5">
             <h4 class="text-secondary fw-semibold mb-3">Turno actual:</h4>
-            <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">-</h1>
+            <h1 id="actual" class="turno-actual text-primary display-1 fw-bold">@Model.CurrentTurn</h1>
 
-            <h5 id="ventanilla" class="text-info fw-bold fs-3 mt-2">Ventanilla: -</h5>
+            <h5 id="ventanilla" class="text-info fw-bold fs-3 mt-2"></h5>
 
             <hr class="my-4" />
-
             <h5 class="text-muted fw-semibold mb-3">Siguiente:</h5>
-            <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">-</h2>
+            <h2 id="siguiente" class="turno-siguiente text-primary fw-bold">@Model.NextTurn</h2>
         </div>
     </div>
 </div>
@@ -41,37 +40,25 @@
         const ventanilla = document.getElementById("ventanilla");
         const fullscreenBtn = document.getElementById("fullscreenBtn");
         const panel = document.getElementById("turnPanel");
-        
-        const sonidos = {
-            1: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5115e3b7ef.mp3?filename=notification-3-20573.mp3"),
-            2: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_64b7b8d8cb.mp3?filename=ping-82822.mp3"),
-            3: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_4297b7cd69.mp3?filename=bell-125970.mp3"),
-            default: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5dfd26e2f1.mp3?filename=pop-94319.mp3")
-        };
 
         connection.on("ActualizarTurnos", (CurrentTurn, NextTurn, Ventanilla) => {
-            if (actual.innerText !== CurrentTurn.toString()) {
-                actual.innerText = CurrentTurn;
-                siguiente.innerText = NextTurn;
-                
-                ventanilla.innerText = "Ventanilla: " + 
-                    (Ventanilla !== null && Ventanilla !== undefined && Ventanilla !== "" ? Ventanilla : "-");
-                
-                actual.classList.add("neon-anim", "fade-anim");
-                ventanilla.classList.add("glow-vent");
+            // siempre actualizar valores
+            actual.innerText = CurrentTurn;
+            siguiente.innerText = NextTurn;
+            ventanilla.innerText = Ventanilla;
 
-                const sonido = sonidos[Ventanilla] || sonidos.default;
-                sonido.play();
+            // animación cuando cambie el número actual
+            actual.classList.add("neon-anim", "fade-anim");
+            ventanilla.classList.add("glow-vent");
 
-                setTimeout(() => {
-                    actual.classList.remove("neon-anim", "fade-anim");
-                    ventanilla.classList.remove("glow-vent");
-                }, 3000);
-            }
+            setTimeout(() => {
+                actual.classList.remove("neon-anim", "fade-anim");
+                ventanilla.classList.remove("glow-vent");
+            }, 3000);
         });
 
         connection.start().catch(err => console.error(err.toString()));
-        
+
         fullscreenBtn.addEventListener("click", () => {
             if (!document.fullscreenElement) {
                 panel.requestFullscreen().then(() => {
@@ -95,7 +82,7 @@
             caret-color: transparent !important;
             cursor: default !important;
         }
-        
+
         .header-title {
             display: block;
             text-align: center;
@@ -120,7 +107,7 @@
                 text-shadow: 0 0 25px #00bfff, 0 0 60px #00bfff;
             }
         }
-        
+
         .fade-anim {
             animation: fadeInOut 1.5s ease-in-out infinite alternate;
         }
@@ -130,7 +117,7 @@
             50% { opacity: 0.7; transform: scale(1.1); }
             100% { opacity: 1; transform: scale(1); }
         }
-        
+
         .glow-vent {
             color: #00bfff !important;
             text-shadow:
@@ -139,7 +126,7 @@
                 0 0 30px #00bfff;
             transition: all 0.5s ease;
         }
-        
+
         #fullscreenBtn {
             border: none;
             color: #007bff;
@@ -151,7 +138,7 @@
             background-color: #007bff;
             color: #fff;
         }
-        
+
         .card {
             width: 100%;
             max-width: 650px;

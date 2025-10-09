@@ -31,18 +31,33 @@
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center" target="_blank" 
                    asp-area="" asp-controller="Turn" asp-action="RequestTurn">
-                    <i class="fas fa-users-cog me-2"></i> Pedir Turno
+                    <i class="fas fa-users-cog me-2"></i>  Solicitar Turno
                 </a>
             </li>
             <li class="nav-item">
-                <form asp-controller="Admin" asp-action="TurnView" method="post">
-                    <button type="submit" class="btn btn-success">Llamar siguiente</button>
+                <a class="nav-link d-flex align-items-center" target="_blank" 
+                   asp-area="" asp-controller="Admin" asp-action="Historial">
+                    <i class="fas fa-users-cog me-2"></i> Historial turnos
+                </a>
+            </li>
+            <li class="nav-item">
+                <form asp-action="TurnView" asp-controller="Admin" method="post" class="ventanilla-form">
+                    <div class="ventanilla-section">
+                        <label for="windowName" class="ventanilla-label">Caja</label>
+                        <select id="windowName" name="windowName" class="ventanilla-select">
+                            <option value="Caja 1">Caja 1</option>
+                            <option value="Caja 2">Caja 2</option>
+                        </select>
+                        <button class="btn-llamar">Llamar Siguiente Turno</button>
+                    </div>
                 </form>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"
-                   asp-area="" asp-controller="Admin" asp-action="ResetTurns">Reiniciar turnos
-                </a>
+                <div class="ventanilla-section">
+                    <a class="btn btn-reiniciar"
+                       asp-area="" asp-controller="Admin" asp-action="ResetTurns">Reiniciar turnos
+                    </a>
+                </div>
             </li>
         </ul>
     </nav>
@@ -62,7 +77,7 @@
                     <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">
                         <i class="fas fa-shield-alt me-1"></i> Privacidad
                     </a>
-                    <a href="#" class="footer-link ms-3">
+                    <a asp-area="" asp-controller="Home" asp-action="Help" class="footer-link ms-3">
                         <i class="fas fa-info-circle me-1"></i> Ayuda
                     </a>
                 </div>
@@ -74,8 +89,14 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    window.tempData = {
+        message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["message"] ?? "")),
+        error: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["error"] ?? ""))
+    };
+    </script>
+    <script src="~/js/Admin.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
