@@ -19,6 +19,10 @@ public class TurnController : Controller
 
     [HttpPost]
     public async Task<IActionResult> RequestTurnPost(){
+        
+        PrinterController printerController = new PrinterController(_context);
+        printerController.PrintTurn();
+        
         var turn = _context.Turns.FirstOrDefault(t=>t.Id==1);
         if(turn==null){
             turn = new Turn{Id=1,CurrentTurn=0,NextTurn=1,TurnRequest=1};
@@ -46,18 +50,23 @@ public class TurnController : Controller
         return View(turn);
     }
 
+
     [HttpPost]
-    public async Task<IActionResult> ResetTurnsConfirmed(){
-        var turn = _context.Turns.FirstOrDefault(t=>t.Id==1);
-        if(turn!=null){
-            turn.CurrentTurn=0;
-            turn.NextTurn=1;
-            turn.TurnRequest=1;
+    public async Task<IActionResult> ResetTurnsConfirmed()
+    {
+        var turn = _context.Turns.FirstOrDefault(t => t.Id == 1);
+        if (turn != null)
+        {
+            turn.CurrentTurn = 0;
+            turn.NextTurn = 1;
+            turn.TurnRequest = 1;
             await _context.SaveChangesAsync();
         }
+
         await _hubContext.Clients.All.SendAsync("ActualizarTurnos", 0, 1, "-");
-        TempData["message"]="Turnos reiniciados correctamente.";
+        TempData["message"] = "Turnos reiniciados correctamente.";
         return RedirectToAction("ResetTurns");
     }
+
     public IActionResult ResetTurns(){ return View(); }
 }

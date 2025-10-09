@@ -50,63 +50,67 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                <i class="fas fa-info-circle me-1"></i> No hay afiliados en esta lista
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach (var user in Model)
+                        @if (!Model.Any())
                         {
-                            <tr class="text-center">
-                                <td>@user.Id</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(user.Picture))
-                                    {
-                                        <img src="@user.Picture"
-                                             class="rounded-circle shadow-sm zoomable-photo"
-                                             style="width:45px; height:45px; object-fit:cover; cursor:pointer;"
-                                             data-bs-toggle="modal"
-                                             data-bs-target="#photoModal"
-                                             data-photo="@user.Picture"
-                                             data-name="@user.Name" />
-                                    }
-                                    else
-                                    {
-                                        <i class="fas fa-user-circle fa-2x text-secondary"></i>
-                                    }
-                                </td>
-                                <td>@user.Name</td>
-                                <td>@user.Identification</td>
-                                <td>@user.Phone</td>
-                                <td>
-                                    @if (user.IsActive)
-                                    {
-                                        <span class="badge bg-success">Activo</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">Inactivo</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a class="btn btn-sm btn-outline-primary me-1" title="Editar"
-                                       asp-action="Edit" asp-route-id="@user.Id">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-action="ToggleStatus" asp-route-id="@user.Id"
-                                       class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")"
-                                       title="@(user.IsActive ? "Desactivar" : "Activar")">
-                                        <i class="fas @(user.IsActive ? "fa-user-slash" : "fa-user-check")"></i>
-                                    </a>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-info-circle me-1"></i> No hay afiliados en esta lista
                                 </td>
                             </tr>
                         }
-                    }
+                        else
+                        {
+                            @foreach (var user in Model)
+                            {
+                                <tr class="text-center">
+                                    <td>@user.Id</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Picture))
+                                        {
+                                            <img src="@user.Picture"
+                                                 class="rounded-circle shadow-sm zoomable-photo"
+                                                 style="width:45px; height:45px; object-fit:cover; cursor:pointer;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#photoModal"
+                                                 data-photo="@user.Picture"
+                                                 data-name="@user.Name" />
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-user-circle fa-2x text-secondary"></i>
+                                        }
+                                    </td>
+                                    <td>@user.Name</td>
+                                    <td>@user.Identification</td>
+                                    <td>@user.Phone</td>
+                                    <td>
+                                        @if (user.IsActive)
+                                        {
+                                            <span class="badge bg-success">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary me-1" title="Editar"
+                                           asp-action="Edit" asp-route-id="@user.Id">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="ToggleStatus" asp-route-id="@user.Id"
+                                           class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")"
+                                           title="@(user.IsActive ? "Desactivar" : "Activar")">
+                                            <i class="fas @(user.IsActive ? "fa-user-slash" : "fa-user-check")"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-info me-1" title="Información" 
+                                           asp-action="Infor"  asp-controller="Admin" asp-route-id="@user.Id" >
+                                            <i class="fas fa-circle-info"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
