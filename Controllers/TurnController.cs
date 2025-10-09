@@ -32,12 +32,22 @@ public class TurnController : Controller
 
         int assigned = turn.TurnRequest;
 
-        var request = new TurnRequest{Number=assigned};
+        var request = new TurnRequest
+        {
+            Number = assigned,
+            IsServed = false,           // aún no atendido
+            CreatedAt = DateTime.Now
+        };
+
         _context.TurnRequests.Add(request);
 
         turn.TurnRequest = (turn.TurnRequest % 100) +1;
         await _context.SaveChangesAsync();
         
+
+        TempData["assignedTurn"] = assigned;
+
+        // Notificar a los paneles en tiempo real
         await _hubContext.Clients.All.SendAsync("NuevoTurnoSolicitado", assigned);
         
         return Json(new { turno = assigned });
