@@ -38,15 +38,15 @@ public class PrinterController : Controller
         using (var fs = new FileStream("/dev/usb/lp0", FileMode.Open, FileAccess.Write))
         {
             // Centrar título
-            fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
+            fs.Write(new byte[] { 0x1D, 0x21, 0x11 }, 0, 3);
             byte[] title = Encoding.UTF8.GetBytes("---------------\nCARNET RIWI\n\n");
             fs.Write(title, 0, title.Length);
 
             // Alinear izquierda
-            fs.Write(new byte[] { 0x1B, 0x61, 0x01}, 0, 3);
+            fs.Write(new byte[] { 0x1D, 0x21, 0x11}, 0, 3);
             string datos = $"{nombre}\n \n{documento}\n---------------\n{rol}\n---------------\n";
             byte[] body = Encoding.UTF8.GetBytes(datos);
-            fs.Write(body, 0, body.Length);
+            fs.Write(body, 0, body.Length);             
 
             // --- QR con el documento ---
             // --- Alinear al centro ---
@@ -102,7 +102,7 @@ public class PrinterController : Controller
         using (var fs = new FileStream("/dev/usb/lp0", FileMode.Open, FileAccess.Write))
         {
             // Centrar título
-            fs.Write(new byte[] { 0x1B, 0x61, 0x01 }, 0, 3);
+            fs.Write(new byte[] {0x1B, 0x61, 0x01 }, 0, 3);
             byte[] title = Encoding.UTF8.GetBytes("--------------\nTU TURNO\n\n");
             fs.Write(title, 0, title.Length);
 

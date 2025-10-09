@@ -13,9 +13,19 @@
             <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-danger">
                 Volver
             </a>
-            <a asp-controller="Printer" asp-action="PrintPdff" asp-route-id="@Model.Id"  class="btn btn-outline-success">
+            <a asp-controller="Printer" asp-action="PrintPdff" asp-route-id="@Model.Id" onclick="printCarnet()" class="btn btn-outline-success">
                 <i class="fas fa-print"></i> Imprimir
             </a>
         </div>
     </div>
 </div>
+@section Scripts
+{
+    <script>
+  function printCarnet(userId) {
+    fetch(`/Admin/PrintPdff/${userId}`)
+      .then(() => alert("Carnet enviado a imprimir"))
+      .catch(() => alert("Error al imprimir"));
+  }
+</script>
+}
