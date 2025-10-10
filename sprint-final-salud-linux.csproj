@@ -1,28 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>sprint_final_salud_linux</RootNamespace>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>sprint_final_salud_linux</RootNamespace>
+  </PropertyGroup>
 
-        <!-- Para Linux y evitar problemas con System.Drawing -->
-        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-        <PublishTrimmed>false</PublishTrimmed>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="CloudinaryDotNet" Version="1.27.7" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-        <PackageReference Include="QRCoder" Version="1.7.0" />
-        <PackageReference Include="QuestPDF" Version="2025.7.2" />
-        <PackageReference Include="SkiaSharp" Version="3.119.1" />
-        <PackageReference Include="System.Drawing.Common" Version="9.0.9" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="QuestPDF" Version="2025.7.2" />
+  </ItemGroup>
 
 </Project>
