@@ -7,7 +7,7 @@ WORKDIR /app
 # Copiamos todo el código
 COPY . .
 
-# Restauramos dependencias y compilamos
+# Restauramos dependencias y compilamos en modo Release
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
@@ -17,14 +17,15 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copiamos el resultado de compilación
+# Copiamos el resultado publicado
 COPY --from=build /app/out .
 
 # Render usa el puerto 8080 por defecto
 EXPOSE 8080
 
-# Configuramos la variable de entorno
+# Variables de entorno
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-ENTRYPOINT ["dotnet", "sprint-final-salud-linux.dll"]
+
+ENTRYPOINT ["dotnet", "sprint_final_salud_linux.dll"]
