@@ -2,14 +2,20 @@
 #   Etapa 1: Compilación
 # ========================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copiamos todo el código
+# Copiamos el archivo de proyecto (.csproj)
+COPY *.sln ./
+COPY sprint_final_salud_linux/*.csproj ./sprint_final_salud_linux/
+
+# Restauramos dependencias
+RUN dotnet restore
+
+# Copiamos el resto del código
 COPY . .
 
-# Restauramos dependencias y compilamos en modo Release
-RUN dotnet restore
-RUN dotnet publish -c Release -o out
+# Compilamos y publicamos en modo Release
+RUN dotnet publish sprint_final_salud_linux/sprint_final_salud_linux.csproj -c Release -o /app/out
 
 # ========================
 #   Etapa 2: Ejecución
@@ -17,7 +23,7 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copiamos el resultado publicado
+# Copiamos los archivos publicados
 COPY --from=build /app/out .
 
 # Render usa el puerto 8080 por defecto
@@ -27,5 +33,5 @@ EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-
+# Ejecutamos la app
 ENTRYPOINT ["dotnet", "sprint_final_salud_linux.dll"]
