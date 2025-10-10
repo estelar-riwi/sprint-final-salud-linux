@@ -1,37 +1,29 @@
-# ========================
-#   Etapa 1: Compilación
-# ========================
+# ==============================
+# Etapa 1: Build del proyecto
+# ==============================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-# Copiamos el archivo de proyecto (.csproj)
-COPY *.sln ./
-COPY sprint_final_salud_linux/*.csproj ./sprint_final_salud_linux/
-
-# Restauramos dependencias
-RUN dotnet restore
-
-# Copiamos el resto del código
-COPY . .
-
-# Compilamos y publicamos en modo Release
-RUN dotnet publish sprint_final_salud_linux/sprint_final_salud_linux.csproj -c Release -o /app/out
-
-# ========================
-#   Etapa 2: Ejecución
-# ========================
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copiamos los archivos publicados
-COPY --from=build /app/out .
+# Copiamos el archivo del proyecto
+COPY sprint-final-salud-linux.csproj ./
+RUN dotnet restore sprint-final-salud-linux.csproj
 
-# Render usa el puerto 8080 por defecto
-EXPOSE 8080
+# Copiamos todo el código fuente
+COPY . .
 
-# Variables de entorno
-ENV ASPNETCORE_URLS=http://+:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
+# Publicamos el proyecto compilado
+RUN dotnet publish sprint-final-salud-linux.csproj -c Release -o /publish
 
-# Ejecutamos la app
-ENTRYPOINT ["dotnet", "sprint_final_salud_linux.dll"]
+# ==============================
+# Etapa 2: Runtime (ejecución)
+# ==============================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /publish .
+
+# Configuramos el puerto de escucha
+ENV ASPNETCORE_URLS=http://+:10000
+EXPOSE 10000
+
+# Comando de ejecución
+ENTRYPOINT ["dotnet", "sprint-final-salud-linux.dll"]
